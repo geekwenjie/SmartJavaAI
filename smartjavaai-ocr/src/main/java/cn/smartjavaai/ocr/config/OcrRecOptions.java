@@ -4,6 +4,7 @@ import lombok.Data;
 
 /**
  * OCR 识别配置
+ *
  * @author dwj
  */
 @Data

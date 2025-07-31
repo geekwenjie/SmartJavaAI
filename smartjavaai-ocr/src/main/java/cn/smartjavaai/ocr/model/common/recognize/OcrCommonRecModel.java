@@ -98,7 +98,23 @@ public interface OcrCommonRecModel extends AutoCloseable{
     default BufferedImage recognizeAndDraw(BufferedImage sourceImage, int fontSize, OcrRecOptions options){
         throw new UnsupportedOperationException("默认不支持该功能");
     }
+    /**
+     * 识别并绘制Base64结果
+     * @param imageData 图片字节数组
+     * @return
+     */
+    default String recognizeAndDrawToBase64(byte[] imageData, int fontSize, OcrRecOptions options){
+        throw new UnsupportedOperationException("默认不支持该功能");
+    }
 
+    /**
+     * 识别并绘制结果
+     * @param imageData 图片字节数组
+     * @return
+     */
+    default OcrInfo recognizeAndDraw(byte[] imageData, int fontSize, OcrRecOptions options){
+        throw new UnsupportedOperationException("默认不支持该功能");
+    }
 
     default List<OcrInfo> batchRecognize(List<BufferedImage> imageList, OcrRecOptions options) {
         throw new UnsupportedOperationException("默认不支持该功能");

@@ -20,6 +20,7 @@ public class OcrInfo {
 
     private String fullText;
 
+    private String base64Img;
 
 
     public OcrInfo(List<List<OcrItem>> lineList, String fullText) {
