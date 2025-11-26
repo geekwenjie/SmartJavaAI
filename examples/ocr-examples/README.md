@@ -9,11 +9,16 @@ src
 ├── main
 │   ├── java
 │   │   └── smartai/examples/ocr
-│   │       ├── OcrDetectionDemo.java     # 文本检测示例
-│   │       ├── OcrDirectionDetDemo.java  # 文本方向检测示例
-│   │       └── OcrRecognizeDemo.java     # 文本识别示例
+│   │       ├── common
+│   │       │   ├── OcrDetectionDemo.java     # 文本检测示例
+│   │       │   ├── OcrDirectionDetDemo.java  # 文本方向检测示例
+│   │       │   └── OcrRecognizeDemo.java     # 文本识别示例
+│   │       └── table
+│   │           └── TableRecDemo.java         # 表格识别示例
+│   │       └── plate
+│   │           └── PlateRecDemo.java         # 车牌识别示例
 │   └── resources
-│       ├── logback.xml                   # 日志配置文件
+│       ├── logback.xml                       # 日志配置文件
 └── test
 
 
@@ -22,24 +27,6 @@ src
 
 ---
 
-## 🧩 功能说明
-
-### 1. 文本检测 - [OcrDetectionDemo]
-
-- **功能**：检测图像中的文本区域，仅返回文本框位置，不识别文字内容。
-
-
-### 2. 文本方向检测 - [OcrDirectionDetDemo]
-
-- **功能**：在文本检测基础上，判断文本整体方向（0°, 90°, 180°, 270°）。
-
-### 3. 文本识别 - [OcrRecognizeDemo]
-
-- **功能**：对检测到的文本区域进行文字识别，支持简体中文、繁体中文、英文、日文等。
-- **流程**：
-    - 文本检测 → 文本识别（或加上方向矫正）
-
----
 
 
 ## ⚙️ 配置要求
@@ -56,13 +43,18 @@ src
 
 ## 🚀 快速开始
 
-1. 克隆项目到本地：
+如果你只想运行某个示例，请按以下方式操作：
 
-2. 导入项目至 IntelliJ IDEA。
+1. 打开 IDEA（或你喜欢的 IDE）
+2. 选择 **“Open”**，然后仅导入 `examples` 目录下对应的示例项目，例如：
 
-3. 根据需要修改模型路径（见各 demo 中注释）。
+   ```
+   examples/ocr-example
+   ```
+3. IDEA 会自动识别并加载依赖。若首次导入，请等待 Maven 下载依赖完成。
+4. 请从我们提供的 百度网盘 中下载模型及其附带文件，并在示例代码中将模型路径修改为您本地的实际路径。
+5. 可通过查看每个 Java 文件顶部的注释了解对应功能，或参考 README 文件中对各 Java 文件功能的说明，运行相应的测试方法进行体验。
 
-4. 运行对应的 JUnit 测试类方法即可体验各项功能。
 
 ---
 

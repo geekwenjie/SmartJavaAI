@@ -2,6 +2,8 @@ package smartai.examples.face.expression;
 
 import ai.djl.modality.cv.Image;
 import ai.djl.modality.cv.ImageFactory;
+import cn.smartjavaai.common.config.Config;
+import cn.smartjavaai.common.cv.SmartImageFactory;
 import cn.smartjavaai.common.entity.DetectionInfo;
 import cn.smartjavaai.common.entity.DetectionRectangle;
 import cn.smartjavaai.common.entity.DetectionResponse;
@@ -10,6 +12,7 @@ import cn.smartjavaai.common.entity.face.ExpressionResult;
 import cn.smartjavaai.common.enums.DeviceEnum;
 import cn.smartjavaai.common.enums.face.FacialExpression;
 import cn.smartjavaai.common.enums.face.LivenessStatus;
+import cn.smartjavaai.common.utils.BufferedImageUtils;
 import cn.smartjavaai.common.utils.ImageUtils;
 import cn.smartjavaai.common.utils.OpenCVUtils;
 import cn.smartjavaai.face.config.FaceDetConfig;
@@ -26,6 +29,7 @@ import cn.smartjavaai.face.model.liveness.LivenessDetModel;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import nu.pattern.OpenCV;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
@@ -46,6 +50,8 @@ import java.util.List;
 /**
  * 表情识别demo
  * 支持识别7种表情：neutral（中性）、happy（高兴）、sad（悲伤）、surprise（惊讶）、fear（恐惧）、disgust（厌恶）、anger（愤怒）
+ * 模型下载地址：https://pan.baidu.com/s/10l22x5fRz_gwLr8EAHa1Jg?pwd=1234 提取码: 1234
+ * 文档地址：http://doc.smartjavaai.cn/
  * @author dwj
  */
 @Slf4j
@@ -54,16 +60,30 @@ public class ExpressionRecDemo {
     //设备类型
     public static DeviceEnum device = DeviceEnum.CPU;
 
+    @BeforeClass
+    public static void beforeAll() throws IOException {
+        //将图片处理的底层引擎切换为 OpenCV
+        SmartImageFactory.setEngine(SmartImageFactory.Engine.OPENCV);
+        //修改缓存路径
+//        Config.setCachePath("/Users/xxx/smartjavaai_cache");
+    }
+
     /**
-     * 获取人脸检测模型
+     * 获取人脸检测模型（均衡模型）
+     * 均衡模型：兼顾速度和精度
+     * 注意事项：SmartJavaAI提供了多种模型选择(更多模型，请查看文档)，切换模型需要同时修改modelEnum及modelPath
      * @return
      */
     public FaceDetModel getFaceDetModel(){
         FaceDetConfig config = new FaceDetConfig();
-        config.setModelEnum(FaceDetModelEnum.RETINA_FACE);//人脸检测模型
-        config.setConfidenceThreshold(FaceDetectConstant.DEFAULT_CONFIDENCE_THRESHOLD);//只返回相似度大于该值的人脸
-        config.setNmsThresh(FaceDetectConstant.NMS_THRESHOLD);//用于去除重复的人脸框，当两个框的重叠度超过该值时，只保留一个
-        config.setDevice(device);
+        //人脸检测模型，SmartJavaAI提供了多种模型选择(更多模型，请查看文档)，切换模型需要同时修改modelEnum及modelPath
+        config.setModelEnum(FaceDetModelEnum.MTCNN);
+        //下载模型并替换本地路径，下载地址：https://pan.baidu.com/s/10l22x5fRz_gwLr8EAHa1Jg?pwd=1234 提取码: 1234
+        config.setModelPath("/Users/wenjie/Documents/develop/model/face_model/mtcnn");
+        //只返回相似度大于该值的人脸,需要根据实际情况调整，分值越大越严格容易漏检，分值越小越宽松容易误识别
+        config.setConfidenceThreshold(0.5f);
+        //用于去除重复的人脸框，当两个框的重叠度超过该值时，只保留一个
+        config.setNmsThresh(FaceDetectConstant.NMS_THRESHOLD);
         return FaceDetModelFactory.getInstance().getModel(config);
     }
 
@@ -75,7 +95,7 @@ public class ExpressionRecDemo {
     public ExpressionModel getExpressionModel(){
         FaceExpressionConfig config = new FaceExpressionConfig();
         config.setModelEnum(ExpressionModelEnum.FrEmotion);
-        config.setModelPath("/Users/xxx/Documents/develop/model/emotion/fr_expression.onnx");
+        config.setModelPath("/Users/wenjie/Documents/develop/model/emotion/fr_expression.onnx");
         config.setDevice(device);
         config.setAlign(true);
         config.setDetectModel(getFaceDetModel());
@@ -90,7 +110,9 @@ public class ExpressionRecDemo {
     public void testExpressionDetect() {
         try {
             ExpressionModel model = getExpressionModel();
-            R<ExpressionResult> result = model.detectTopFace("src/main/resources/emotion/happy.png");
+            //创建Image对象，可以从文件、url、InputStream创建、BufferedImage、Base64创建，具体使用方法可以查看文档
+            Image image = SmartImageFactory.getInstance().fromFile("src/main/resources/emotion/happy.png");
+            R<ExpressionResult> result = model.detectTopFace(image);
             if(result.isSuccess()){
                 log.info("识别结果：{}", JSONObject.toJSONString(result.getData().getExpression().getDescription()));
             }else{
@@ -109,7 +131,9 @@ public class ExpressionRecDemo {
     public void testExpressionDetect2() {
         try {
             ExpressionModel model = getExpressionModel();
-            R<DetectionResponse> result = model.detect("src/main/resources/emotion/happy.png");
+            //创建Image对象，可以从文件、url、InputStream创建、BufferedImage、Base64创建，具体使用方法可以查看文档
+            Image image = SmartImageFactory.getInstance().fromFile("src/main/resources/emotion/happy.png");
+            R<DetectionResponse> result = model.detect(image);
             if(result.isSuccess()){
                 //log.info("识别结果：{}", JSONObject.toJSONString(result.getData()));
                 for (DetectionInfo detectionInfo : result.getData().getDetectionInfoList()) {
@@ -133,7 +157,8 @@ public class ExpressionRecDemo {
         try {
             FaceDetModel faceDetModel = getFaceDetModel();
             ExpressionModel model = getExpressionModel();
-            BufferedImage image = ImageIO.read(new File(Paths.get("src/main/resources/emotion/happy.png").toAbsolutePath().toString()));
+            //创建Image对象，可以从文件、url、InputStream创建、BufferedImage、Base64创建，具体使用方法可以查看文档
+            Image image = SmartImageFactory.getInstance().fromFile("src/main/resources/emotion/happy.png");
             R<DetectionResponse> detResult = faceDetModel.detect(image);
             if(detResult.isSuccess()){
                 R<List<ExpressionResult>> result = model.detect(image, detResult.getData());
@@ -162,7 +187,8 @@ public class ExpressionRecDemo {
         try {
             FaceDetModel faceDetModel = getFaceDetModel();
             ExpressionModel model = getExpressionModel();
-            BufferedImage image = ImageIO.read(new File(Paths.get("src/main/resources/emotion/happy.png").toAbsolutePath().toString()));
+            //创建Image对象，可以从文件、url、InputStream创建、BufferedImage、Base64创建，具体使用方法可以查看文档
+            Image image = SmartImageFactory.getInstance().fromFile("src/main/resources/emotion/happy.png");
             R<DetectionResponse> detResult = faceDetModel.detect(image);
             if(detResult.isSuccess()){
                 for (DetectionInfo detectionInfo : detResult.getData().getDetectionInfoList()) {
@@ -188,15 +214,16 @@ public class ExpressionRecDemo {
     public void testExpressionDetectAndDraw(){
         try {
             ExpressionModel model = getExpressionModel();
-            BufferedImage image = ImageIO.read(new File(Paths.get("src/main/resources/emotion/surprise.png").toAbsolutePath().toString()));
+            //创建Image对象，可以从文件、url、InputStream创建、BufferedImage、Base64创建，具体使用方法可以查看文档
+            Image image = SmartImageFactory.getInstance().fromFile("src/main/resources/emotion/surprise.png");
             R<DetectionResponse> result = model.detect(image);
             if(result.isSuccess()){
                 //log.info("识别结果：{}", JSONObject.toJSONString(result.getData()));
                 for (DetectionInfo detectionInfo : result.getData().getDetectionInfoList()) {
                     log.info("识别结果：{}", JSONObject.toJSONString(detectionInfo.getFaceInfo().getExpressionResult().getExpression().getDescription()));
-                    ImageUtils.drawImageRectWithText(image, detectionInfo.getDetectionRectangle(), detectionInfo.getFaceInfo().getExpressionResult().getExpression().getDescription(), Color.red);
+                    ImageUtils.drawRectAndText(image, detectionInfo.getDetectionRectangle(), detectionInfo.getFaceInfo().getExpressionResult().getExpression().getDescription());
                 }
-                ImageUtils.saveImage(image, "output/detect.jpg");
+                ImageUtils.save(image, "output/detect.jpg");
             }else{
                 log.info("识别失败：{}", result.getMessage());
             }
@@ -209,7 +236,7 @@ public class ExpressionRecDemo {
      * 摄像头表情识别
      * 注意事项：如果视频比较卡，可以使用轻量的人脸检测模型
      */
-    @Test
+//    @Test
     public void testExpressionDetectCamera(){
         try {
             ExpressionModel expressionModel = getExpressionModel();
@@ -248,7 +275,7 @@ public class ExpressionRecDemo {
                 JOptionPane.showConfirmDialog(null, "Failed to capture image from WebCam.");
             }
             ViewerFrame frame = new ViewerFrame(width, height);
-            ImageFactory factory = ImageFactory.getInstance();
+            SmartImageFactory factory = SmartImageFactory.getInstance();
             Size size = new Size(width, height);
 
             while (capture.isOpened()) {
@@ -257,19 +284,18 @@ public class ExpressionRecDemo {
                 }
                 Mat resizeImage = new Mat();
                 Imgproc.resize(image, resizeImage, size);
-                Image img = factory.fromImage(resizeImage);
-                BufferedImage bufferedImage = OpenCVUtils.mat2Image(resizeImage);
-                R<DetectionResponse> detectedResult = expressionModel.detect(bufferedImage);
+                Image img = factory.fromMat(resizeImage);
+                R<DetectionResponse> detectedResult = expressionModel.detect(img);
                 if(!detectedResult.isSuccess()){
                     log.debug("识别失败：{}", detectedResult.getMessage());
                     continue;
                 }
                 for(DetectionInfo detectionInfo : detectedResult.getData().getDetectionInfoList()){
                     DetectionRectangle detectionRectangle = detectionInfo.getDetectionRectangle();
-                    String text = detectionInfo.getFaceInfo().getExpressionResult().getExpression().getDescription() + ":" + detectionInfo.getFaceInfo().getExpressionResult().getScore();
-                    ImageUtils.drawImageRectWithText(bufferedImage, detectionRectangle, text, Color.red);
+                    String text = detectionInfo.getFaceInfo().getExpressionResult().getExpression().getLabel() + ":" + detectionInfo.getFaceInfo().getExpressionResult().getScore();
+                    ImageUtils.drawRectAndText(img, detectionRectangle, text);
                 }
-                frame.showImage(bufferedImage);
+                frame.showImage(ImageUtils.toBufferedImage(img));
             }
 
             capture.release();

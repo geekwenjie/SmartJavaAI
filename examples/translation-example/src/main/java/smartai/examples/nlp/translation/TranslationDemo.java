@@ -1,6 +1,7 @@
 package smartai.examples.nlp.translation;
 
 import ai.djl.util.JsonUtils;
+import cn.smartjavaai.common.config.Config;
 import cn.smartjavaai.common.entity.R;
 import cn.smartjavaai.common.enums.DeviceEnum;
 import cn.smartjavaai.translation.config.TranslationModelConfig;
@@ -11,31 +12,79 @@ import cn.smartjavaai.translation.factory.TranslationModelFactory;
 import cn.smartjavaai.translation.model.TranslationModel;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.IOException;
+
 /**
- * 翻译Demo
- * 支持 Meta AI 开源的 NLLB-200 模型，实现 200 多种语言之间的高质量互译。
- * NLLB-200官网地址：https://github.com/facebookresearch/fairseq/tree/nllb
+ * 机器翻译Demo
  * 模型下载地址：https://pan.baidu.com/s/1wf7btnb4cyBFv7DB7baHnw?pwd=1234 提取码: 1234
+ * 开发文档：http://doc.smartjavaai.cn/
  * @author dwj
  */
 @Slf4j
 public class TranslationDemo {
 
+    //设备类型
+    public static DeviceEnum device = DeviceEnum.CPU;
+
+    @BeforeClass
+    public static void beforeAll() throws IOException {
+        //修改缓存路径
+//        Config.setCachePath("/Users/xxx/smartjavaai_cache");
+    }
 
     /**
-     * 翻译
+     * 获取模型(NLLB)
+     * @return
+     */
+    public TranslationModel getNllbModel() {
+        TranslationModelConfig config = new TranslationModelConfig();
+        //指定翻译模型：NLLB,切换模型需同时修改modelEnum及modelPath
+        config.setModelEnum(TranslationModeEnum.NLLB_MODEL);
+        //指定模型路径，需将模型路径修改为本地的模型路径
+        config.setModelPath("/Users/xxx/Documents/develop/model/trans/traced_translation_cpu.pt");
+        config.setDevice(DeviceEnum.CPU);
+        return TranslationModelFactory.getInstance().getModel(config);
+    }
+
+    /**
+     * 获取中文模型(OPUS 中文->英文)
+     * @return
+     */
+    public TranslationModel getOPUSModelZH_EN() {
+        TranslationModelConfig config = new TranslationModelConfig();
+        //指定翻译模型,切换模型需同时修改modelEnum及modelPath
+        config.setModelEnum(TranslationModeEnum.OPUS_MT_ZH_EN);
+        //指定模型路径，需将模型路径修改为本地的模型路径
+        config.setModelPath("/Users/wenjie/Documents/develop/model/trans/opus-mt-zh-en/traced_translation.pt");
+        config.setDevice(DeviceEnum.CPU);
+        return TranslationModelFactory.getInstance().getModel(config);
+    }
+
+    /**
+     * 获取中文模型(OPUS 英文->中文)
+     * @return
+     */
+    public TranslationModel getOPUSModelEN_ZH() {
+        TranslationModelConfig config = new TranslationModelConfig();
+        //指定翻译模型,切换模型需同时修改modelEnum及modelPath
+        config.setModelEnum(TranslationModeEnum.OPUS_MT_EN_ZH);
+        //指定模型路径，需将模型路径修改为本地的模型路径
+        config.setModelPath("/Users/wenjie/Documents/develop/model/trans/opus-mt-en-zh/traced_translation.pt");
+        config.setDevice(DeviceEnum.CPU);
+        return TranslationModelFactory.getInstance().getModel(config);
+    }
+
+
+    /**
+     * 翻译(nllb模型)
      */
     @Test
-    public void translate() {
+    public void nllbTranslate() {
         try {
-            TranslationModelConfig config = new TranslationModelConfig();
-            //指定翻译模型：NLLB
-            config.setModelEnum(TranslationModeEnum.NLLB_MODEL);
-            //指定模型路径，需将模型路径修改为本地的模型路径
-            config.setModelPath("/Users/xxx/Documents/develop/model/trans/traced_translation_cpu.pt");
-            TranslationModel translationModel = TranslationModelFactory.getInstance().getModel(config);
+            TranslationModel translationModel = getNllbModel();
             //翻译参数
             TranslateParam translateParam = new TranslateParam();
             //输入文字
@@ -64,28 +113,16 @@ public class TranslationDemo {
     }
 
     /**
-     * GPU 翻译
+     * 翻译(opus 中文->英文)
      */
     @Test
-    public void translateGpu() {
+    public void opusTranslate1() {
         try {
-            TranslationModelConfig config = new TranslationModelConfig();
-            //指定翻译模型：NLLB
-            config.setModelEnum(TranslationModeEnum.NLLB_MODEL);
-            //指定设备：GPU
-            config.setDevice(DeviceEnum.GPU);
-            //指定模型路径，需将模型路径修改为本地的 GPU 模型路径
-            config.setModelPath("/Users/xxx/Documents/develop/model/trans/traced_translation_gpu.pt");
-            //获取翻译模型
-            TranslationModel translationModel = TranslationModelFactory.getInstance().getModel(config);
+            TranslationModel translationModel = getOPUSModelZH_EN();
             //翻译参数
             TranslateParam translateParam = new TranslateParam();
             //输入文字
-            translateParam.setInput("你好，欢迎使用SmartJavaAI！");
-            //源语言：中文
-            translateParam.setSourceLanguage(LanguageCode.ZHO_HANS);
-            //目标语言：韩语
-            translateParam.setTargetLanguage(LanguageCode.ENG_LATN);
+            translateParam.setInput("SmartJavaAI是专为JAVA 开发者打造的一个功能丰富、开箱即用的 JAVA AI算法工具包");
             R<String> result = translationModel.translate(translateParam);
             if(result.isSuccess()){
                 log.info("翻译结果：{}", result.getData());
@@ -96,5 +133,29 @@ public class TranslationDemo {
             e.printStackTrace();
         }
     }
+
+    /**
+     * 翻译(opus 英文->中文)
+     */
+    @Test
+    public void opusTranslate2() {
+        try {
+            TranslationModel translationModel = getOPUSModelEN_ZH();
+            //翻译参数
+            TranslateParam translateParam = new TranslateParam();
+            //输入文字
+            translateParam.setInput("You don't have to be machine learning expert to get started");
+            R<String> result = translationModel.translate(translateParam);
+            if(result.isSuccess()){
+                log.info("翻译结果：{}", result.getData());
+            }else{
+                log.error("翻译失败：{}", result.getMessage());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
 }

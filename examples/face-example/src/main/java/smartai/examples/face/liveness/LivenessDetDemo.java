@@ -3,6 +3,8 @@ package smartai.examples.face.liveness;
 import ai.djl.modality.cv.Image;
 import ai.djl.modality.cv.ImageFactory;
 import cn.hutool.core.lang.UUID;
+import cn.smartjavaai.common.config.Config;
+import cn.smartjavaai.common.cv.SmartImageFactory;
 import cn.smartjavaai.common.entity.DetectionInfo;
 import cn.smartjavaai.common.entity.DetectionRectangle;
 import cn.smartjavaai.common.entity.DetectionResponse;
@@ -32,6 +34,7 @@ import nu.pattern.OpenCV;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.Java2DFrameUtils;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
@@ -52,14 +55,22 @@ import java.util.List;
 /**
  * 静态活体检测demo
  * 模型下载地址：https://pan.baidu.com/s/10l22x5fRz_gwLr8EAHa1Jg?pwd=1234 提取码: 1234
+ * 文档地址：http://doc.smartjavaai.cn/
  * @author dwj
- * @date 2025/5/1
  */
 @Slf4j
 public class LivenessDetDemo {
 
     //设备类型
     public static DeviceEnum device = DeviceEnum.CPU;
+
+    @BeforeClass
+    public static void beforeAll() throws IOException {
+        //将图片处理的底层引擎切换为 OpenCV
+        SmartImageFactory.setEngine(SmartImageFactory.Engine.OPENCV);
+        //修改缓存路径
+//        Config.setCachePath("/Users/xxx/smartjavaai_cache");
+    }
 
 
 
@@ -72,7 +83,7 @@ public class LivenessDetDemo {
         config.setModelEnum(LivenessModelEnum.IIC_FL_MODEL);
         config.setDevice(device);
         //需替换为实际模型存储路径
-        config.setModelPath("/Users/xxx/Documents/develop/model/anti/IIC_Fl.onnx");
+        config.setModelPath("/Users/wenjie/Documents/develop/model/anti/IIC_Fl.onnx");
         //人脸活体阈值,可选,默认0.8，超过阈值则认为是真人，低于阈值是非活体
         config.setRealityThreshold(LivenessConstant.DEFAULT_REALITY_THRESHOLD);
         /*视频检测帧数，可选，默认10，输出帧数超过这个number之后，就可以输出识别结果。
@@ -96,9 +107,9 @@ public class LivenessDetDemo {
         config.setModelEnum(LivenessModelEnum.MINI_VISION_MODEL);
         config.setDevice(device);
         //模型1路径：需替换为实际模型存储路径
-        config.setModelPath("/Users/xxx/Documents/develop/model/live/2.7_80x80_MiniFASNetV2.onnx");
+        config.setModelPath("/Users/wenjie/Documents/develop/model/live/2.7_80x80_MiniFASNetV2.onnx");
         //SE模型路径：需替换为实际模型存储路径
-        config.putCustomParam("seModelPath", "/Users/xxx/Documents/develop/model/live/4_0_0_80x80_MiniFASNetV1SE.onnx");
+        config.putCustomParam("seModelPath", "/Users/wenjie/Documents/develop/model/live/4_0_0_80x80_MiniFASNetV1SE.onnx");
         //人脸活体阈值,可选,超过阈值则认为是真人，低于阈值是非活体
         config.setRealityThreshold(0.5f);
         /*视频检测帧数，可选，默认10，输出帧数超过这个number之后，就可以输出识别结果。
@@ -114,15 +125,21 @@ public class LivenessDetDemo {
 
 
     /**
-     * 获取人脸检测模型
+     * 获取人脸检测模型（均衡模型）
+     * 均衡模型：兼顾速度和精度
+     * 注意事项：SmartJavaAI提供了多种模型选择(更多模型，请查看文档)，切换模型需要同时修改modelEnum及modelPath
      * @return
      */
     public FaceDetModel getFaceDetModel(){
         FaceDetConfig config = new FaceDetConfig();
-        config.setModelEnum(FaceDetModelEnum.RETINA_FACE);//人脸检测模型
-        config.setConfidenceThreshold(FaceDetectConstant.DEFAULT_CONFIDENCE_THRESHOLD);//只返回相似度大于该值的人脸
-        config.setNmsThresh(FaceDetectConstant.NMS_THRESHOLD);//用于去除重复的人脸框，当两个框的重叠度超过该值时，只保留一个
-        config.setDevice(device);
+        //人脸检测模型，SmartJavaAI提供了多种模型选择(更多模型，请查看文档)，切换模型需要同时修改modelEnum及modelPath
+        config.setModelEnum(FaceDetModelEnum.MTCNN);
+        //下载模型并替换本地路径，下载地址：https://pan.baidu.com/s/10l22x5fRz_gwLr8EAHa1Jg?pwd=1234 提取码: 1234
+        config.setModelPath("/Users/wenjie/Documents/develop/model/face_model/mtcnn");
+        //只返回相似度大于该值的人脸,需要根据实际情况调整，分值越大越严格容易漏检，分值越小越宽松容易误识别
+        config.setConfidenceThreshold(0.5f);
+        //用于去除重复的人脸框，当两个框的重叠度超过该值时，只保留一个
+        config.setNmsThresh(FaceDetectConstant.NMS_THRESHOLD);
         return FaceDetModelFactory.getInstance().getModel(config);
     }
 
@@ -135,10 +152,12 @@ public class LivenessDetDemo {
     public void testLivenessDetect(){
         try {
             LivenessDetModel livenessDetModel = getLivenessDetModel();
-            R<DetectionResponse> response = livenessDetModel.detect("src/main/resources/liveness/1.jpg");
+            //创建Image对象，可以从文件、url、InputStream创建、BufferedImage、Base64创建，具体使用方法可以查看文档
+            Image image = SmartImageFactory.getInstance().fromFile("src/main/resources/liveness/1.jpg");
+            R<DetectionResponse> response = livenessDetModel.detect(image);
             if(response.isSuccess()){
                 for (DetectionInfo detectionInfo : response.getData().getDetectionInfoList()){
-                    log.info("活体检测结果：{}", JSONObject.toJSONString(detectionInfo.getFaceInfo().getLivenessStatus().getStatus().getDescription()));
+                    log.info("活体检测结果：{}", JSONObject.toJSONString(detectionInfo));
                 }
             }else{
                 log.info("活体检测失败：{}", response.getMessage());
@@ -155,18 +174,18 @@ public class LivenessDetDemo {
     public void testLivenessDetectAndDraw(){
         try {
             LivenessDetModel livenessDetModel = getLivenessDetModel();
-            BufferedImage image = ImageIO.read(new File(Paths.get("src/main/resources/liveness/1.jpg").toAbsolutePath().toString()));
+            //创建Image对象，可以从文件、url、InputStream创建、BufferedImage、Base64创建，具体使用方法可以查看文档
+            Image image = SmartImageFactory.getInstance().fromFile("src/main/resources/liveness/1.jpg");
             R<DetectionResponse> response = livenessDetModel.detect(image);
             if(response.isSuccess()){
                 for (DetectionInfo detectionInfo : response.getData().getDetectionInfoList()){
                     log.info("活体检测结果：{}", JSONObject.toJSONString(detectionInfo.getFaceInfo().getLivenessStatus().getStatus().getDescription()));
-                    Color color = detectionInfo.getFaceInfo().getLivenessStatus().getStatus() == LivenessStatus.LIVE ? Color.GREEN : Color.RED;
-                    ImageUtils.drawImageRectWithText(image, detectionInfo.getDetectionRectangle(), detectionInfo.getFaceInfo().getLivenessStatus().getStatus().getDescription(), color);
+                    ImageUtils.drawRectAndText(image, detectionInfo.getDetectionRectangle(), detectionInfo.getFaceInfo().getLivenessStatus().getStatus().toString());
+                    ImageUtils.save(image, "output/detect.jpg");
                 }
             }else{
                 log.info("活体检测失败：{}", response.getMessage());
             }
-            ImageUtils.saveImage(image, "output/detect.jpg");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -180,10 +199,12 @@ public class LivenessDetDemo {
         try {
             LivenessDetModel livenessDetModel = getLivenessDetModel();
             //指定文件夹路径
-            File dir = new File("face-example/src/main/resources/liveness");
+            File dir = new File("src/main/resources/liveness");
             File[] files = dir.listFiles();
+            //创建Image对象，可以从文件、url、InputStream创建、BufferedImage、Base64创建，具体使用方法可以查看文档
+            SmartImageFactory imageFactory = SmartImageFactory.getInstance();
             for (File file : files) {
-                R<LivenessResult> response = livenessDetModel.detectTopFace(ImageIO.read(file));
+                R<LivenessResult> response = livenessDetModel.detectTopFace(imageFactory.fromFile(file));
                 if(response.isSuccess()){
                     log.info("{}活体检测结果：{},分数：{}", file.getName(), response.getData().getStatus().getDescription(), response.getData().getScore());
                 }else{
@@ -204,8 +225,8 @@ public class LivenessDetDemo {
         try {
             FaceDetModel faceDetectModel = getFaceDetModel();
             LivenessDetModel livenessDetModel = getLivenessDetModel();
-            // 将图片路径转换为 BufferedImage
-            BufferedImage image = ImageIO.read(new File(Paths.get("src/main/resources/liveness/1.jpg").toAbsolutePath().toString()));
+            //创建Image对象，可以从文件、url、InputStream创建、BufferedImage、Base64创建，具体使用方法可以查看文档
+            Image image = SmartImageFactory.getInstance().fromFile("src/main/resources/liveness/1.jpg");
             //人脸检测
             R<DetectionResponse> detectionResponse = faceDetectModel.detect(image);
             if(detectionResponse.isSuccess()){
@@ -237,8 +258,8 @@ public class LivenessDetDemo {
         try {
             FaceDetModel faceDetModel = getFaceDetModel();
             LivenessDetModel livenessDetModel = getMiniVisionLivenessDetModel();
-            // 将图片路径转换为 BufferedImage
-            BufferedImage image = ImageIO.read(new File(Paths.get("src/main/resources/liveness/1.jpg").toAbsolutePath().toString()));
+            //创建Image对象，可以从文件、url、InputStream创建、BufferedImage、Base64创建，具体使用方法可以查看文档
+            Image image = SmartImageFactory.getInstance().fromFile("src/main/resources/liveness/1.jpg");
             R<DetectionResponse> detResult = faceDetModel.detect(image);
             if(detResult.isSuccess()){
                 for (DetectionInfo detectionInfo : detResult.getData().getDetectionInfoList()) {
@@ -267,7 +288,7 @@ public class LivenessDetDemo {
         try {
             LivenessDetModel livenessDetModel = getLivenessDetModel();
             //视频路径
-            R<LivenessResult> livenessStatus = livenessDetModel.detectVideo("video.mp4");
+            R<LivenessResult> livenessStatus = livenessDetModel.detectVideo("/Users/wenjie/Documents/idea_workplace/SmartJavaAI-Demo/src/main/resources/girl.mp4");
             if (livenessStatus.isSuccess()){
                 log.info("识别结果：{}", JSONObject.toJSONString(livenessStatus.getData()));
             }else{
@@ -282,7 +303,7 @@ public class LivenessDetDemo {
      * 摄像头活体检测
      * 注意事项：如果视频比较卡，可以使用轻量的人脸检测模型
      */
-    @Test
+//    @Test
     public void testLivenessDetectCamera(){
         try {
             LivenessDetModel livenessDetModel = getLivenessDetModel();
@@ -321,7 +342,7 @@ public class LivenessDetDemo {
                 JOptionPane.showConfirmDialog(null, "Failed to capture image from WebCam.");
             }
             ViewerFrame frame = new ViewerFrame(width, height);
-            ImageFactory factory = ImageFactory.getInstance();
+            SmartImageFactory factory = SmartImageFactory.getInstance();
             Size size = new Size(width, height);
 
             while (capture.isOpened()) {
@@ -330,9 +351,8 @@ public class LivenessDetDemo {
                 }
                 Mat resizeImage = new Mat();
                 Imgproc.resize(image, resizeImage, size);
-                Image img = factory.fromImage(resizeImage);
-                BufferedImage bufferedImage = OpenCVUtils.mat2Image(resizeImage);
-                R<DetectionResponse> detectedResult = livenessDetModel.detect(bufferedImage);
+                Image img = factory.fromMat(resizeImage);
+                R<DetectionResponse> detectedResult = livenessDetModel.detect(img);
                 if(!detectedResult.isSuccess()){
                     log.debug("识别失败：{}", detectedResult.getMessage());
                     continue;
@@ -341,11 +361,10 @@ public class LivenessDetDemo {
                     DetectionRectangle detectionRectangle = detectionInfo.getDetectionRectangle();
                     Color color = detectionInfo.getFaceInfo().getLivenessStatus().getStatus() == LivenessStatus.LIVE ? Color.GREEN : Color.RED;
                     String text = detectionInfo.getFaceInfo().getLivenessStatus().getStatus().getDescription() + ":" + detectionInfo.getFaceInfo().getLivenessStatus().getScore();
-                    ImageUtils.drawImageRectWithText(bufferedImage, detectionRectangle, text, color);
+                    ImageUtils.drawRectAndText(img, detectionRectangle, text);
                 }
-                frame.showImage(bufferedImage);
+                frame.showImage(ImageUtils.toBufferedImage(img));
             }
-
             capture.release();
             System.exit(0);
         } catch (Exception e) {

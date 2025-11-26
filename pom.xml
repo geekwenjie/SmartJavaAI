@@ -7,17 +7,19 @@
     <name>SmartJavaAI</name>
     <groupId>cn.smartjavaai</groupId>
     <artifactId>smartjavaai-parent</artifactId>
-    <version>1.0.22</version>
+    <version>1.0.27</version>
     <packaging>pom</packaging>
     <description>SmartJavaAI</description>
     <modules>
-        <module>smartjavaai-face</module>
-        <module>smartjavaai-translate</module>
-        <module>smartjavaai-common</module>
-        <module>smartjavaai-objectdetection</module>
-        <module>smartjavaai-all</module>
-        <module>smartjavaai-ocr</module>
-        <module>smartjavaai-bom</module>
+        <module>face</module>
+        <module>translate</module>
+        <module>common</module>
+        <module>vision</module>
+        <module>all</module>
+        <module>ocr</module>
+        <module>bom</module>
+        <module>speech</module>
+<!--        <module>face-pro</module>-->
     </modules>
 
     <properties>
@@ -25,7 +27,6 @@
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <djl.version>0.32.0</djl.version>
-
     </properties>
 
     <dependencyManagement>
@@ -46,10 +47,10 @@
             <groupId>ai.djl</groupId>
             <artifactId>api</artifactId>
         </dependency>
-        <dependency>
-            <groupId>ai.djl</groupId>
-            <artifactId>basicdataset</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>ai.djl</groupId>-->
+<!--            <artifactId>basicdataset</artifactId>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>ai.djl</groupId>
             <artifactId>model-zoo</artifactId>
@@ -118,11 +119,11 @@
             <version>1.7.30</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>1.7.30</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.slf4j</groupId>-->
+<!--            <artifactId>slf4j-simple</artifactId>-->
+<!--            <version>1.7.30</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>commons-cli</groupId>
@@ -170,16 +171,16 @@
             <artifactId>opencv</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>ai.djl.ml.xgboost</groupId>
-            <artifactId>xgboost</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>ai.djl.tensorrt</groupId>
-            <artifactId>tensorrt</artifactId>
-            <scope>runtime</scope>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>ai.djl.ml.xgboost</groupId>-->
+<!--            <artifactId>xgboost</artifactId>-->
+<!--            <scope>runtime</scope>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>ai.djl.tensorrt</groupId>-->
+<!--            <artifactId>tensorrt</artifactId>-->
+<!--            <scope>runtime</scope>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>cn.hutool</groupId>
@@ -205,7 +206,40 @@
             <version>1.5.10</version>
         </dependency>
 
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.3</version>
+            <scope>runtime</scope>
+        </dependency>
 
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.83</version>
+            <scope>runtime</scope>
+        </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>org.junit.jupiter</groupId>-->
+<!--            <artifactId>junit-jupiter-api</artifactId>-->
+<!--            <version>5.11.0</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
+
+<!--        <dependency>-->
+<!--            <groupId>org.junit.jupiter</groupId>-->
+<!--            <artifactId>junit-jupiter-engine</artifactId>-->
+<!--            <version>5.11.0</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
 
@@ -281,6 +315,27 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- 让编译/测试插件使用 toolchain 选择的 JDK -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-toolchains-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>toolchain</goal>
+                        </goals>
+                        <configuration>
+                            <toolchains>
+                                <jdk>
+                                    <version>1.8</version>
+                                </jdk>
+                            </toolchains>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -317,5 +372,6 @@
             </roles>
         </developer>
     </developers>
+
 
 </project>

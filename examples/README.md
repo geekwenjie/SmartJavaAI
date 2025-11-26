@@ -1,44 +1,40 @@
 # SmartJavaAI 示例项目说明
 
-本项目包含多个基于 SmartJavaAI 平台的人脸识别、活体检测及目标检测的示例代码
 
 ## 项目结构
 
 ```
 src/main/java/smartai/examples/
-├── face/                    人脸相关示例
-│   ├── attribute/           人脸属性检测模块
-│   │   └── FaceAttributeDetDemo.java         示例：检测性别、年龄等人脸属性
-│   ├── facerec/             人脸识别模块（1:1、1:N）
-│   │   ├── FaceNetDemo.java                 示例：使用 FaceNet 算法做人脸识别
-│   │   ├── GpuFaceDemo.java                 示例：使用 GPU 加速的人脸识别
-│   │   ├── LightFaceDemo.java               示例：轻量级人脸识别模型（适用于嵌入式场景）
-│   │   ├── RetinaFaceDemo.java              示例：使用 RetinaFace 进行人脸检测
-│   │   └── SeetaFace6Demo.java              示例：集成 SeetaFace6 的人脸识别
-│   └── liveness/            活体检测模块
-│       ├── LivenessDetDemo.java             示例：基于图像进行活体检测
-├── objectdetection/         目标检测模块
-│   └── ObjectDetection.java                 示例：使用目标检测模型识别图像中的目标
-└── ocr/                     OCR文字识别模块
-│   ├── OcrDetectionDemo.java                示例：OCR通用文字检测示例
-│   ├── OcrDirectionDetDemo.java             示例：OCR方向检测示例
-│   └── OcrRecognizeDemo.java                示例：OCR通用文字识别示例
-├── nlp/                     NLP
-│   ├── translate/           机器翻译
-│       └── TranslationDemo.java         示例：机器翻译
+├── face-example/                    人脸检测、人脸识别等功能示例
+├── vision-example/                  通用视觉检测示例：目标检测、目标分割、图像分类等
+├── ocr-example/                     OCR文字识别、车牌识别等功能示例
+├── translate-example/               机器翻译功能示例
+├── speech-example/                  语音识别、语音合成功能示例
+
 ```
 
-## 快速开始
+本项目在 `examples` 文件夹下提供了多个示例工程，用于演示各功能模块的使用方法：
 
-1. 克隆本项目
-2. 导入 IDE（推荐 IntelliJ IDEA）
-3. 运行对应 demo 文件即可测试功能（确保模型文件已准备好）
+* `face-example`：人脸检测、人脸识别等功能示例
+* `vision-example`：通用视觉检测示例：目标检测、目标分割、图像分类等
+* `ocr-example`：OCR文字识别、车牌识别等功能示例
+* `translate-example`：机器翻译功能示例
+* `speech-example`：语音识别、语音合成功能示例
 
-## 模型说明
+## 运行方式
 
-- 本示例项目配合 `smartjavaai` 平台使用，模型加载及使用方式已封装好。
-- 支持 CPU 和 GPU 两种运行模式。
-- 所有模型均可通过 Maven 或本地加载方式接入。
+如果你只想运行某个示例，请按以下方式操作：
+
+1. 打开 IDEA（或你喜欢的 IDE）
+2. 选择 **“Open”**，然后仅导入 `examples` 目录下对应的示例项目，例如：
+
+   ```
+   examples/face-example
+   ```
+3. IDEA 会自动识别并加载依赖。若首次导入，请等待 Maven 下载依赖完成。
+4. 请从我们提供的 百度网盘 中下载模型及其附带文件，并在示例代码中将模型路径修改为您本地的实际路径。
+5. 可通过查看每个 Java 文件顶部的注释了解对应功能，或参考 README 文件中对各 Java 文件功能的说明，运行相应的测试方法进行体验。
+
 
 ## 联系与支持
 

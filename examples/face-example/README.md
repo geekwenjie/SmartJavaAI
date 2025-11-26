@@ -24,52 +24,7 @@ src/main/java/smartai/examples/face/
 
 ---
 
-## 🧩 功能模块说明
 
-### 1. 人脸属性检测 ([FaceAttributeDetDemo.java](file:///Users/xxx/Documents/idea_workplace/SmartJavaAI/examples/face-example/src/main/java/smartai/examples/face/attribute/FaceAttributeDetDemo.java))
-- **功能**：识别性别、年龄、眼镜佩戴状态、种族等属性。
-- **使用模型**：SeetaFace6 等。
-
----
-
-### 2. 表情识别 ([ExpressionRecDemo.java](file:///Users/xxx/Documents/idea_workplace/SmartJavaAI/examples/face-example/src/main/java/smartai/examples/face/expression/ExpressionRecDemo.java))
-- **功能**：识别 7 种面部表情：中性、高兴、悲伤、惊讶、恐惧、厌恶、愤怒。
-- **支持模式**：单人、多人、摄像头实时检测。
-
----
-
-### 3. 人脸检测 ([FaceDetDemo.java](file:///Users/xxx/Documents/idea_workplace/SmartJavaAI/examples/face-example/src/main/java/smartai/examples/face/facedet/FaceDetDemo.java))
-- **功能**：识别图像或视频中的人脸区域，并返回人脸边界框。
-- **支持模型**：RetinaFace、SeetaFace6。
----
-
-### 4. 人脸识别 ([FaceRecDemo.java](file:///Users/xxx/Documents/idea_workplace/SmartJavaAI/examples/face-example/src/main/java/smartai/examples/face/facerec/FaceRecDemo.java))
-- **功能**：提取人脸特征、进行人脸比对（1:1）、人脸搜索（1:N）、人脸注册管理。
-- **支持数据库**：SQLite、Milvus 向量数据库。
-
----
-
-### 5. 活体检测 ([LivenessDetDemo.java](file:///Users/xxx/Documents/idea_workplace/SmartJavaAI/examples/face-example/src/main/java/smartai/examples/face/liveness/LivenessDetDemo.java))
-- **功能**：判断输入图像中人脸是否为真实人脸（非照片、视频伪造）。
-- **支持模型**：IIC-FL、MiniVision（双模型融合）。
-
----
-
-### 6. 人脸质量评估 ([FaceQualityDetDemo.java](file:///Users/xxx/Documents/idea_workplace/SmartJavaAI/examples/face-example/src/main/java/smartai/examples/face/quality/FaceQualityDetDemo.java))
-- **功能**：评估人脸图像的质量指标，包括：
-    - 亮度 (Brightness)
-    - 完整度 (Completeness)
-    - 清晰度 (Clarity)
-    - 姿态 (Pose)
-    - 分辨率 (Resolution)
-
----
-
-### 7. 工具类 ([ViewerFrame.java](file:///Users/xxx/Documents/idea_workplace/SmartJavaAI/examples/face-example/src/main/java/smartai/examples/face/ViewerFrame.java))
-- **功能**：GUI 显示组件，用于展示图像处理结果（如人脸框、表情、活体状态等）。
-- **用途**：支持摄像头实时检测时的结果可视化。
-
----
 
 ## ⚙️ 配置要求
 
@@ -83,15 +38,21 @@ src/main/java/smartai/examples/face/
 
 ---
 
-## 🚀 快速开始
 
-1. 克隆项目到本地：
+## 运行方式
 
-2. 导入项目至 IntelliJ IDEA。
+如果你只想运行某个示例，请按以下方式操作：
 
-3. 根据需要修改模型路径（见各 demo 中注释）。
+1. 打开 IDEA（或你喜欢的 IDE）
+2. 选择 **“Open”**，然后仅导入 `examples` 目录下对应的示例项目，例如：
 
-4. 运行对应的 JUnit 测试类方法即可体验各项功能。
+   ```
+   examples/face-example
+   ```
+3. IDEA 会自动识别并加载依赖。若首次导入，请等待 Maven 下载依赖完成。
+4. 请从我们提供的 百度网盘 中下载模型及其附带文件，并在示例代码中将模型路径修改为您本地的实际路径。
+5. 可通过查看每个 Java 文件顶部的注释了解对应功能，或参考 README 文件中对各 Java 文件功能的说明，运行相应的测试方法进行体验。
+
 
 ---
 
