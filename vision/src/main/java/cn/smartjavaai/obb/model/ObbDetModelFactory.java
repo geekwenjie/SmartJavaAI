@@ -54,7 +54,7 @@ public class ObbDetModelFactory {
             throw new DetectionException("未配置模型");
         }
         return modelMap.computeIfAbsent(config.getModelEnum(), k -> {
-            return createFaceDetModel(config);
+            return createModel(config);
         });
     }
 
@@ -63,7 +63,7 @@ public class ObbDetModelFactory {
      * @param config
      * @return
      */
-    private ObbDetModel createFaceDetModel(ObbDetModelConfig config) {
+    private ObbDetModel createModel(ObbDetModelConfig config) {
         Class<?> clazz = registry.get(config.getModelEnum());
         if(clazz == null){
             throw new DetectionException("Unsupported model");

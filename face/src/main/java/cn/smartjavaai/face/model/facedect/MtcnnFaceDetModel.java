@@ -221,52 +221,51 @@ public class MtcnnFaceDetModel extends CommonFaceDetModel{
     }
 
 
+    /**
+     * 使用MtcnnPredictors进行人脸检测
+     * @param image
+     * @param predictors
+     * @return
+     */
+    public DetectedObjects detectCoreByPredictors(Image image, MtcnnPredictors predictors){
+        Predictor<NDList, NDList> pNetPredictor = predictors.pNetPredictor;
+        Predictor<NDList, NDList> rNetPredictor = predictors.rNetPredictor;
+        Predictor<NDList, NDList> oNetPredictor = predictors.oNetPredictor;
+        try (NDManager manager = pNetModel.getNDManager().newSubManager();){
+            int h = image.getHeight();
+            int w = image.getWidth();
+            //第一阶段
+            NDList outputPnet = PNetModel.firstStage(manager, pNetPredictor, image);
 
-
-//    /**
-//     * 转换为FaceDetectedResult
-//     * @param mtcnnBatchResult
-//     * @return
-//     */
-//    public static DetectionResponse convertToDetectionResponse(MtcnnBatchResult mtcnnBatchResult){
-//        if(Objects.isNull(mtcnnBatchResult) || CollectionUtils.isEmpty(mtcnnBatchResult.boxes)
-//                || CollectionUtils.isEmpty(mtcnnBatchResult.points)
-//                || CollectionUtils.isEmpty(mtcnnBatchResult.probs)){
-//            return null;
-//        }
-//        DetectionResponse detectionResponse = new DetectionResponse();
-//        List<DetectionInfo> detectionInfoList = new ArrayList<DetectionInfo>();
-//
-//        NDArray boxes = mtcnnBatchResult.boxes.get(0);
-//        NDArray probs = mtcnnBatchResult.probs.get(0);
-//        NDArray points = mtcnnBatchResult.points.get(0);
-//
-//        if (DJLCommonUtils.isNDArrayEmpty(boxes) || DJLCommonUtils.isNDArrayEmpty(probs) || DJLCommonUtils.isNDArrayEmpty(points)){
-//            return null;
-//        }
-//        long numBoxes = boxes.getShape().get(0);
-//        for (int i = 0; i < numBoxes; i++) {
-//            float[] boxCoords = boxes.get(i).toFloatArray(); // [x1, y1, x2, y2]
-//            float score = probs.getFloat(i);
-//            NDArray pointND = points.get(i); // shape [5,2]
-//            float[] flatPoints = pointND.toFloatArray(); // 一维长度 10
-//            List<Point> keyPoints = new ArrayList<Point>();
-//            for (int p = 0; p < 5; p++) {
-//                keyPoints.add(new Point(flatPoints[p * 2], flatPoints[p * 2 + 1]));
-//            }
-//            int x = Math.round(boxCoords[0]);
-//            int y = Math.round(boxCoords[1]);
-//            int w = Math.round(boxCoords[2] - boxCoords[0]);
-//            int h = Math.round(boxCoords[3] - boxCoords[1]);
-//
-//            DetectionRectangle rectangle = new DetectionRectangle(x, y, w, h);
-//            FaceInfo faceInfo = new FaceInfo(keyPoints);
-//            DetectionInfo detectionInfo = new DetectionInfo(rectangle, score, faceInfo);
-//            detectionInfoList.add(detectionInfo);
-//        }
-//        detectionResponse.setDetectionInfoList(detectionInfoList);
-//        return detectionResponse;
-//    }
+            if(CollectionUtils.isEmpty(outputPnet)){
+                return DJLCommonUtils.buildEmptyDetectedObjects();
+            }
+            NDArray boxes = outputPnet.get(0);
+            NDArray image_inds = outputPnet.get(1);
+            NDArray imgs = outputPnet.get(2);
+            if(DJLCommonUtils.isNDArrayEmpty(boxes) || DJLCommonUtils.isNDArrayEmpty(image_inds) || DJLCommonUtils.isNDArrayEmpty(imgs)){
+                return DJLCommonUtils.buildEmptyDetectedObjects();
+            }
+            NDList pad = MtcnnUtils.pad(boxes, w, h);
+            //第二阶段
+            NDList outputRnet = RNetModel.secondStage(manager, rNetPredictor, imgs, boxes, pad, image_inds);
+            if(CollectionUtils.isEmpty(outputRnet)){
+                return DJLCommonUtils.buildEmptyDetectedObjects();
+            }
+            NDArray image_indsFiltered = outputRnet.get(0);
+            NDArray scoresFiltered = outputRnet.get(1);
+            boxes = outputRnet.get(2);
+            if(DJLCommonUtils.isNDArrayEmpty(boxes) || DJLCommonUtils.isNDArrayEmpty(image_indsFiltered) || DJLCommonUtils.isNDArrayEmpty(scoresFiltered)){
+                return DJLCommonUtils.buildEmptyDetectedObjects();
+            }
+            //第三阶段
+            MtcnnBatchResult oNetResult = ONetModel.thirdStage(manager, oNetPredictor, imgs, boxes, w, h, scoresFiltered, image_indsFiltered);
+            return FaceUtils.toDetectedObjects(oNetResult, w, h);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
 
 
 
@@ -292,6 +291,57 @@ public class MtcnnFaceDetModel extends CommonFaceDetModel{
     public boolean isFromFactory() {
         return fromFactory;
     }
+
+
+    public MtcnnPredictors borrowPredictors() throws Exception {
+        if(pnetPredictorPool == null || rnetPredictorPool == null || onetPredictorPool == null){
+            return null;
+        }
+        Predictor<NDList, NDList> p = pnetPredictorPool.borrowObject();
+        Predictor<NDList, NDList> r = rnetPredictorPool.borrowObject();
+        Predictor<NDList, NDList> o = onetPredictorPool.borrowObject();
+        return new MtcnnPredictors(p, r, o, this);
+    }
+
+    public void returnPredictor(Predictor<NDList, NDList> pNetPredictor, Predictor<NDList, NDList> rNetPredictor, Predictor<NDList, NDList> oNetPredictor) {
+        if (pNetPredictor != null) {
+            try {
+                pnetPredictorPool.returnObject(pNetPredictor); //归还
+            } catch (Exception e) {
+                log.warn("归还Predictor失败", e);
+                try {
+                    pNetPredictor.close(); // 归还失败才销毁
+                } catch (Exception ex) {
+                    log.error("关闭Predictor失败", ex);
+                }
+            }
+        }
+        if (rNetPredictor != null) {
+            try {
+                rnetPredictorPool.returnObject(rNetPredictor); //归还
+            } catch (Exception e) {
+                log.warn("归还Predictor失败", e);
+                try {
+                    rNetPredictor.close(); // 归还失败才销毁
+                } catch (Exception ex) {
+                    log.error("关闭Predictor失败", ex);
+                }
+            }
+        }
+        if (oNetPredictor != null) {
+            try {
+                onetPredictorPool.returnObject(oNetPredictor); //归还
+            } catch (Exception e) {
+                log.warn("归还Predictor失败", e);
+                try {
+                    oNetPredictor.close(); // 归还失败才销毁
+                } catch (Exception ex) {
+                    log.error("关闭Predictor失败", ex);
+                }
+            }
+        }
+    }
+
 
     @Override
     public void close() {

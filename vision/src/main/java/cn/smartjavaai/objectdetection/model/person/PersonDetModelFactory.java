@@ -56,7 +56,7 @@ public class PersonDetModelFactory {
             throw new DetectionException("未配置模型");
         }
         return modelMap.computeIfAbsent(config.getModelEnum(), k -> {
-            return createFaceDetModel(config);
+            return createModel(config);
         });
     }
 
@@ -65,7 +65,7 @@ public class PersonDetModelFactory {
      * @param config
      * @return
      */
-    private PersonDetModel createFaceDetModel(PersonDetModelConfig config) {
+    private PersonDetModel createModel(PersonDetModelConfig config) {
         Class<?> clazz = registry.get(config.getModelEnum());
         if(clazz == null){
             throw new DetectionException("Unsupported model");

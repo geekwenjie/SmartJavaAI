@@ -2,6 +2,7 @@ package cn.smartjavaai.face.vector.core;
 
 import cn.hutool.core.util.IdUtil;
 import cn.smartjavaai.common.config.Config;
+import cn.smartjavaai.common.executor.GlobalExecutor;
 import cn.smartjavaai.common.utils.SimilarityUtil;
 import cn.smartjavaai.face.dao.FaceDao;
 import cn.smartjavaai.face.entity.FaceSearchParams;
@@ -23,11 +24,8 @@ import java.util.stream.Collectors;
 public class SQLiteClient implements VectorDBClient {
 
     private final FaceDao faceDao;
-    //private final List<FaceVector> memoryIndex = new CopyOnWriteArrayList<>();
     private final ConcurrentHashMap<String, FaceVector> memoryIndex = new ConcurrentHashMap<>();
     private int featureDimension; // 维度
-
-    private final ExecutorService executor = Executors.newFixedThreadPool(4);
 
     private SQLiteConfig config;
 
@@ -162,7 +160,7 @@ public class SQLiteClient implements VectorDBClient {
                     return similarity >= faceSearchParams.getThreshold() ?
                             new FaceSearchResult(vector.getId(), similarity, vector.getMetadata()) :
                             null;
-                }, executor))
+                }, GlobalExecutor.getExecutor()))
                 .collect(Collectors.toList());
 
         // 收集结果并过滤null
@@ -185,15 +183,7 @@ public class SQLiteClient implements VectorDBClient {
 
     @Override
     public void close() {
-        executor.shutdown();
-        try {
-            if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {
-                executor.shutdownNow();
-            }
-        } catch (InterruptedException e) {
-            executor.shutdownNow();
-            Thread.currentThread().interrupt();
-        }
+
     }
 
     @Override

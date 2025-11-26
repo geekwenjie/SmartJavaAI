@@ -55,7 +55,7 @@ public class ActionRecModelFactory {
             throw new DetectionException("未配置模型");
         }
         return modelMap.computeIfAbsent(config.getModelEnum(), k -> {
-            return createFaceDetModel(config);
+            return createModel(config);
         });
     }
 
@@ -64,7 +64,7 @@ public class ActionRecModelFactory {
      * @param config
      * @return
      */
-    private ActionRecModel createFaceDetModel(ActionRecModelConfig config) {
+    private ActionRecModel createModel(ActionRecModelConfig config) {
         Class<?> clazz = registry.get(config.getModelEnum());
         if(clazz == null){
             throw new DetectionException("Unsupported model");

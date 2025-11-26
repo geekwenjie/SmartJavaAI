@@ -176,7 +176,7 @@ public class Seetaface6FaceAttributeModel implements FaceAttributeModel {
             imageData.data = BufferedImageUtils.getMatrixBGR(image);
             //检测人脸
             SeetaRect[] seetaResult = detectPredictor.Detect(imageData);
-            if(Objects.isNull(seetaResult)){
+            if(Objects.isNull(seetaResult) || seetaResult.length == 0){
                 throw new FaceException("无人脸数据");
             }
             for(SeetaRect seetaRect : seetaResult){
@@ -456,7 +456,7 @@ public class Seetaface6FaceAttributeModel implements FaceAttributeModel {
             imageData.data = BufferedImageUtils.getMatrixBGR(image);
             //检测人脸
             SeetaRect[] seetaResult = detectPredictor.Detect(imageData);
-            if(Objects.isNull(seetaResult)){
+            if(Objects.isNull(seetaResult) || seetaResult.length == 0){
                 throw new FaceException("无人脸数据");
             }
             SeetaPointF[] landmarks = new SeetaPointF[faceLandmarker.number()];
@@ -510,7 +510,7 @@ public class Seetaface6FaceAttributeModel implements FaceAttributeModel {
             imageData.data = ImageUtils.getMatrixBGR(image);
             //检测人脸
             SeetaRect[] seetaResult = detectPredictor.Detect(imageData);
-            if(Objects.isNull(seetaResult)){
+            if(Objects.isNull(seetaResult) || seetaResult.length == 0){
                 throw new FaceException("无人脸数据");
             }
             for(SeetaRect seetaRect : seetaResult){
@@ -642,7 +642,7 @@ public class Seetaface6FaceAttributeModel implements FaceAttributeModel {
             imageData.data = ImageUtils.getMatrixBGR(image);
             //检测人脸
             SeetaRect[] seetaResult = detectPredictor.Detect(imageData);
-            if(Objects.isNull(seetaResult)){
+            if(Objects.isNull(seetaResult) || seetaResult.length == 0){
                 throw new FaceException("无人脸数据");
             }
             SeetaPointF[] landmarks = new SeetaPointF[faceLandmarker.number()];

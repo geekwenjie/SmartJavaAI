@@ -66,8 +66,9 @@ public interface ClipModel extends AutoCloseable{
 
     /**
      * 图片特征比较
-     * @param image1 图1
-     * @param image2 图2
+     * @param image1
+     * @param image2
+     * @param scale
      * @return
      */
     default R<Float> compareImage(Image image1, Image image2, float scale){
@@ -115,10 +116,12 @@ public interface ClipModel extends AutoCloseable{
         throw new UnsupportedOperationException("默认不支持该功能");
     }
 
+
     /**
-     * 文本特征比较
-     * @param feature1 文本1
-     * @param feature2 文本2
+     * 特征比较
+     * @param feature1
+     * @param feature2
+     * @param scale
      * @return
      */
     default R<Float> compareFeatures(float[] feature1, float[] feature2, float scale){

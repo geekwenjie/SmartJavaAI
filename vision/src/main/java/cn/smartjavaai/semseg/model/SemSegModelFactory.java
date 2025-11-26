@@ -54,7 +54,7 @@ public class SemSegModelFactory {
             throw new DetectionException("未配置模型");
         }
         return modelMap.computeIfAbsent(config.getModelEnum(), k -> {
-            return createFaceDetModel(config);
+            return createModel(config);
         });
     }
 
@@ -63,7 +63,7 @@ public class SemSegModelFactory {
      * @param config
      * @return
      */
-    private SemSegModel createFaceDetModel(SemSegModelConfig config) {
+    private SemSegModel createModel(SemSegModelConfig config) {
         Class<?> clazz = registry.get(config.getModelEnum());
         if(clazz == null){
             throw new DetectionException("Unsupported model");

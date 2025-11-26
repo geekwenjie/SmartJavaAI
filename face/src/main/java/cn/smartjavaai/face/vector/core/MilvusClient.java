@@ -637,7 +637,8 @@ public class MilvusClient implements VectorDBClient {
 
             List<FaceVector> result = new ArrayList<>();
             for (QueryResultsWrapper.RowRecord row : records) {
-                String id = (String) row.get(VectorDBConstants.FieldNames.ID_FIELD);
+                Object idObj = row.get(VectorDBConstants.FieldNames.ID_FIELD);
+                String id = idObj != null ? idObj.toString() : null;
                 Object vectorObj = row.get(VectorDBConstants.FieldNames.VECTOR_FIELD);
                 float[] vector = null;
                 if (vectorObj instanceof List<?>) {

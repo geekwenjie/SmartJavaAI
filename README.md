@@ -242,6 +242,19 @@ SmartJavaAI是专为JAVA 开发者打造的一个功能丰富、开箱即用的 
         </div>
       </td>
     </tr>
+ <tr>
+      <td>
+        <div align="left">
+          <p>零样本目标检测<br>(ZeroShot Object Detection)</p>
+      - YOLO-World 模型 <br>
+        </div>
+      </td>     
+      <td>
+        <div align="center">
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/vision/yolo-world.png" height = "200px"/>
+        </div>
+      </td>
+    </tr>
   <tr>
       <td>
         <div align="left">
@@ -483,7 +496,7 @@ SmartJavaAI是专为JAVA 开发者打造的一个功能丰富、开箱即用的 
 <dependency>
     <groupId>cn.smartjavaai</groupId>
     <artifactId>all</artifactId>
-    <version>1.0.27</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 

@@ -46,7 +46,7 @@ public class ClsDemo {
 
     public ClsModel getModel(){
         ClsModelConfig config = new ClsModelConfig();
-        //实例分割模型，切换模型需要同时修改modelEnum及modelPath
+        //切换模型需要同时修改modelEnum及modelPath
         config.setModelEnum(ClsModelEnum.YOLOV8);
         //模型所在路径，synset.txt也需要放在同目录下
         config.setModelPath("/Users/wenjie/Documents/develop/model/vision/cls/yolo11m-cls.onnx");

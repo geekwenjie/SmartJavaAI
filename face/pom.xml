@@ -6,11 +6,11 @@
     <parent>
         <groupId>cn.smartjavaai</groupId>
         <artifactId>smartjavaai-parent</artifactId>
-        <version>1.0.27</version>
+        <version>1.1.0</version>
     </parent>
 
     <artifactId>face</artifactId>
-    <version>1.0.27</version>
+    <version>1.1.0</version>
     <name>face</name>
     <description>SmartJavaAI</description>
     <url>https://github.com/geekwenjie/SmartJavaAI</url>
@@ -26,7 +26,7 @@
 <!--        <maven.compiler.target>11</maven.compiler.target>-->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.test.skip>true</maven.test.skip>
-        <javacv.version>1.5.8</javacv.version>
+        <javacv.version>1.5.10</javacv.version>
         <javacv.ffmpeg.version>5.1.2-1.5.8</javacv.ffmpeg.version>
     </properties>
 
@@ -55,6 +55,8 @@
             <artifactId>milvus-sdk-java</artifactId>
             <version>2.5.7</version>
         </dependency>
+
+
 
 
     </dependencies>
