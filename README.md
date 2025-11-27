@@ -420,6 +420,8 @@ SmartJavaAI是专为JAVA 开发者打造的一个功能丰富、开箱即用的 
   - 支持KINETICS400数据集中400个人类动作识别
 - **姿态估计**
   - 集成YOLOv8-pose、YOLOv11-pose等模型
+- **零样本目标检测**
+  - 集成YOLOv8s_worldv2、owlv2_base_patch16模型
 - **CLIP**
   - 支持提取图片及文本特征
   - 支持文搜图、图搜文、图搜图
@@ -693,6 +695,14 @@ SmartJavaAI是专为JAVA 开发者打造的一个功能丰富、开箱即用的 
 | 模型名称        | 引擎      | 模型简介                           | 模型开源网站     |
 |-------------|---------|--------------------------------|------------|
 | YOLOV11-OBB | OnnxRuntime | Ultralytics在DOTAv1 数据集 上训练的模型、通过引入一个额外的角度来更准确地定位图像中的对象 | [Github](https://docs.ultralytics.com/zh/tasks/segment/) |
+---
+
+#### 零样本目标检测模型
+
+| 模型名称        | 引擎      | 模型简介                           | 模型开源网站                                                   |
+|-------------|---------|--------------------------------|----------------------------------------------------------|
+| YOLOv8s-worldv2 | PyTorch | 可根据描述性文本检测图像中的任何物体 | [官网](https://docs.ultralytics.com/zh/models/yolo-world/) |
+| owlv2-base-patch16 | PyTorch | OWLv2是一种多模态模型，通过结合CLIP的骨干和ViT样的Transformer，实现零样本文本对象检测| [官网](https://huggingface.co/google/owlv2-base-patch16) |
 ---
 
 #### 行人检测模型
