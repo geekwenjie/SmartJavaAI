@@ -9,6 +9,7 @@ import ai.djl.modality.cv.output.DetectedObjects;
 import ai.djl.repository.zoo.Criteria;
 import ai.djl.repository.zoo.ModelNotFoundException;
 import ai.djl.repository.zoo.ZooModel;
+import ai.djl.translate.TranslateException;
 import cn.smartjavaai.common.cv.SmartImageFactory;
 import cn.smartjavaai.common.entity.DetectionResponse;
 import cn.smartjavaai.common.entity.R;
@@ -49,6 +50,30 @@ public class CommonFaceDetModel implements FaceDetModel{
     private ZooModel<Image, DetectedObjects> model;
 
     private FaceDetConfig config;
+
+    @Override
+    public Predictor<Image, DetectedObjects> borrowPredictor() throws Exception {
+        if(predictorPool == null){
+            throw new FaceException("请先加载模型");
+        }
+        return predictorPool.borrowObject();
+    }
+
+    @Override
+    public void returnPredictor(Predictor<Image, DetectedObjects> predictor){
+        if (predictor != null) {
+            try {
+                predictorPool.returnObject(predictor); //归还
+            } catch (Exception e) {
+                log.warn("归还Predictor失败", e);
+                try {
+                    predictor.close(); // 归还失败才销毁
+                } catch (Exception ex) {
+                    log.error("关闭Predictor失败", ex);
+                }
+            }
+        }
+    }
 
 
     /**

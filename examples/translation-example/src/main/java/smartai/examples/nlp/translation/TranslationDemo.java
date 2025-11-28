@@ -44,7 +44,7 @@ public class TranslationDemo {
         //指定翻译模型：NLLB,切换模型需同时修改modelEnum及modelPath
         config.setModelEnum(TranslationModeEnum.NLLB_MODEL);
         //指定模型路径，需将模型路径修改为本地的模型路径
-        config.setModelPath("/Users/xxx/Documents/develop/model/trans/traced_translation_cpu.pt");
+        config.setModelPath("/Users/wenjie/Documents/develop/model/translate/nllb/traced_translation_cpu.pt");
         config.setDevice(DeviceEnum.CPU);
         return TranslationModelFactory.getInstance().getModel(config);
     }

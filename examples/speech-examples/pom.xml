@@ -12,7 +12,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <smartjavaai.version>1.0.27</smartjavaai.version>
+        <smartjavaai.version>1.1.0</smartjavaai.version>
         <!--如果打包运行，需要替换成你的main-->
         <exec.mainClass>smartai.examples.speech.asr.common.OcrRecognizeDemo</exec.mainClass>
 

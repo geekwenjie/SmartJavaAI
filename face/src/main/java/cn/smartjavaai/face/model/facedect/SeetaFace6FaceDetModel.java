@@ -1,7 +1,9 @@
 package cn.smartjavaai.face.model.facedect;
 
 import ai.djl.engine.Engine;
+import ai.djl.inference.Predictor;
 import ai.djl.modality.cv.Image;
+import ai.djl.ndarray.NDList;
 import cn.smartjavaai.common.cv.SmartImageFactory;
 import cn.smartjavaai.common.entity.DetectionResponse;
 import cn.smartjavaai.common.entity.R;
@@ -13,7 +15,9 @@ import cn.smartjavaai.common.utils.ImageUtils;
 import cn.smartjavaai.face.config.FaceDetConfig;
 import cn.smartjavaai.face.exception.FaceException;
 import cn.smartjavaai.face.factory.FaceDetModelFactory;
+import cn.smartjavaai.face.model.facedect.mtcnn.MtcnnPredictors;
 import cn.smartjavaai.face.seetaface.NativeLoader;
+import cn.smartjavaai.face.seetaface.SeetaFace6FaceDetPredictors;
 import cn.smartjavaai.face.utils.FaceUtils;
 import com.seeta.pool.*;
 import com.seeta.sdk.*;
@@ -123,6 +127,27 @@ public class SeetaFace6FaceDetModel implements FaceDetModel{
             }
         }
     }
+
+    public DetectionResponse detectByPredictors(Image image, SeetaFace6FaceDetPredictors predictors) {
+        SeetaImageData imageData = new SeetaImageData(image.getWidth(), image.getHeight(), 3);
+        imageData.data = ImageUtils.getMatrixBGR(image);
+        FaceDetector predictor = predictors.faceDetector;
+        FaceLandmarker faceLandmarker = predictors.faceLandmarker;
+        try {
+            SeetaRect[] seetaResult = predictor.Detect(imageData);
+            List<SeetaPointF[]> seetaPointFSList = new ArrayList<SeetaPointF[]>();
+            for(SeetaRect seetaRect : seetaResult){
+                //提取人脸的5点人脸标识
+                SeetaPointF[] pointFS = new SeetaPointF[faceLandmarker.number()];
+                faceLandmarker.mark(imageData, seetaRect, pointFS);
+                seetaPointFSList.add(pointFS);
+            }
+            return FaceUtils.convertToDetectionResponse(seetaResult, seetaPointFSList);
+        } catch (Exception e) {
+            throw new FaceException("目标检测错误", e);
+        }
+    }
+
 
     @Override
     public R<DetectionResponse> detectAndDraw(Image image) {
@@ -274,6 +299,33 @@ public class SeetaFace6FaceDetModel implements FaceDetModel{
         BufferedImage drawnImage = BufferedImageUtils.copyBufferedImage(sourceImage);
         BufferedImageUtils.drawBoundingBoxes(drawnImage, result.getData());
         return R.ok(drawnImage);
+    }
+
+    public SeetaFace6FaceDetPredictors borrowPredictors() throws Exception {
+        if(faceDetectorPool == null || faceLandmarkerPool == null){
+            return null;
+        }
+        FaceDetector predictor = faceDetectorPool.borrowObject();
+        predictor.set(FaceDetector.Property.PROPERTY_THRESHOLD, config.getConfidenceThreshold() > 0 ? config.getConfidenceThreshold() : THRESHOLD);
+        FaceLandmarker faceLandmarker = faceLandmarkerPool.borrowObject();
+        return new SeetaFace6FaceDetPredictors(predictor, faceLandmarker, this);
+    }
+
+    public void returnPredictor(FaceDetector predictor, FaceLandmarker faceLandmarker) {
+        if (predictor != null) {
+            try {
+                faceDetectorPool.returnObject(predictor); //归还
+            } catch (Exception e) {
+                log.warn("归还Predictor失败", e);
+            }
+        }
+        if (faceLandmarker != null) {
+            try {
+                faceLandmarkerPool.returnObject(faceLandmarker); //归还
+            } catch (Exception e) {
+                log.warn("归还Predictor失败", e);
+            }
+        }
     }
 
 

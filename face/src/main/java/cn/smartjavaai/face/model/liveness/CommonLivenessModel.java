@@ -6,6 +6,7 @@ import ai.djl.engine.Engine;
 import ai.djl.inference.Predictor;
 import ai.djl.modality.cv.Image;
 import ai.djl.modality.cv.ImageFactory;
+import ai.djl.modality.cv.output.DetectedObjects;
 import ai.djl.repository.zoo.Criteria;
 import ai.djl.repository.zoo.ModelNotFoundException;
 import ai.djl.repository.zoo.ZooModel;
@@ -28,8 +29,14 @@ import cn.smartjavaai.face.enums.LivenessModelEnum;
 import cn.smartjavaai.face.exception.FaceException;
 import cn.smartjavaai.face.factory.FaceDetModelFactory;
 import cn.smartjavaai.face.factory.LivenessModelFactory;
+import cn.smartjavaai.face.model.facedect.FaceDetectManager;
+import cn.smartjavaai.face.model.facedect.MtcnnFaceDetModel;
+import cn.smartjavaai.face.model.facedect.SeetaFace6FaceDetModel;
+import cn.smartjavaai.face.model.facedect.mtcnn.MtcnnPredictors;
 import cn.smartjavaai.face.model.liveness.criterial.LivenessCriteriaFactory;
 import cn.smartjavaai.face.model.liveness.translator.MiniVisionTranslator;
+import cn.smartjavaai.face.seetaface.SeetaFace6FaceDetPredictors;
+import cn.smartjavaai.face.utils.FaceUtils;
 import com.seeta.sdk.FaceAntiSpoofing;
 import lombok.extern.slf4j.Slf4j;
 import nu.pattern.OpenCV;
@@ -124,8 +131,12 @@ public class CommonLivenessModel implements LivenessDetModel{
         return detectVideo(new FFmpegFrameGrabber(videoPath));
     }
 
-    private R<LivenessResult> detectVideo(FFmpegFrameGrabber grabber) {
-        try {
+    protected R<LivenessResult> detectVideo(FFmpegFrameGrabber grabber) {
+        Predictor<Image, Float> predictor = null;
+        try (FaceDetectManager faceDetectManager = new FaceDetectManager(config.getDetectModel())){
+            //初始化predictors
+            faceDetectManager.borrowPredictors();
+            predictor = predictorPool.borrowObject();
             //滑动窗口
             Deque<Float> scoreWindow = new ArrayDeque<>();
             grabber.start();
@@ -147,7 +158,8 @@ public class CommonLivenessModel implements LivenessDetModel{
                         converterToMat = new OpenCVFrameConverter.ToOrgOpenCvCoreMat();
                     }
                     Mat mat = converterToMat.convert(frame);
-                    R<LivenessResult> livenessScore = detectTopFace(SmartImageFactory.getInstance().fromMat(mat));
+                    Image image = SmartImageFactory.getInstance().fromMat(mat);
+                    R<LivenessResult> livenessScore = detectVideoFrame(faceDetectManager, image, predictor);
                     mat.release();
                     if(!livenessScore.isSuccess()){
                         log.debug("第" + frameIndex + "帧处理失败：" + livenessScore.getMessage());
@@ -175,6 +187,24 @@ public class CommonLivenessModel implements LivenessDetModel{
             }
         } catch (Exception e) {
             throw new FaceException(e);
+        } finally {
+            if (predictor != null) {
+                try {
+                    predictorPool.returnObject(predictor); //归还
+                } catch (Exception e) {
+                    log.warn("归还Predictor失败", e);
+                    try {
+                        predictor.close(); // 归还失败才销毁
+                    } catch (Exception ex) {
+                        log.error("关闭Predictor失败", ex);
+                    }
+                }
+            }
+            try {
+                grabber.release();
+            } catch (FFmpegFrameGrabber.Exception e) {
+                throw new RuntimeException(e);
+            }
         }
         return R.fail(R.Status.Unknown);
     }
@@ -259,6 +289,40 @@ public class CommonLivenessModel implements LivenessDetModel{
                     }
                 }
             }
+        }
+    }
+
+    private R<LivenessResult> detectVideoFrame(FaceDetectManager faceDetectManager, Image image, Predictor<Image, Float> predictor) {
+        //预处理图片
+        Image processedImage = null;
+        try {
+            //检测人脸
+            R<DetectionInfo> detectResult = faceDetectManager.detectTopFace(image);
+            if(!detectResult.isSuccess()){
+                return R.fail(detectResult.getCode(), detectResult.getMessage());
+            }
+            DetectionInfo detectionInfo = detectResult.getData();
+            if(config.getModelEnum() == LivenessModelEnum.IIC_FL_MODEL){
+                processedImage = new DJLImagePreprocessor(image, detectionInfo.getDetectionRectangle())
+                        .setExtendRatio(96f / 112f)
+                        .enableSquarePadding(true)
+                        .enableScaling(true)
+                        .setTargetSize(128)
+                        .enableCenterCrop(true)
+                        .setCenterCropSize(112)
+                        .process();
+            }
+            Float result = null;
+            if(processedImage != null){
+                result = predictor.predict(processedImage);
+                ImageUtils.releaseOpenCVMat(processedImage);
+            }else{
+                result = predictor.predict(image);
+            }
+            LivenessStatus status = result >= config.getRealityThreshold() ? LivenessStatus.LIVE : LivenessStatus.NON_LIVE;
+            return R.ok(new LivenessResult(status, result));
+        } catch (Exception e) {
+            throw new FaceException("活体检测错误", e);
         }
     }
 

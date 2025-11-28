@@ -54,7 +54,7 @@ public class InstanceSegModelFactory {
             throw new DetectionException("未配置模型");
         }
         return modelMap.computeIfAbsent(config.getModelEnum(), k -> {
-            return createFaceDetModel(config);
+            return createModel(config);
         });
     }
 
@@ -63,7 +63,7 @@ public class InstanceSegModelFactory {
      * @param config
      * @return
      */
-    private InstanceSegModel createFaceDetModel(InstanceSegModelConfig config) {
+    private InstanceSegModel createModel(InstanceSegModelConfig config) {
         Class<?> clazz = registry.get(config.getModelEnum());
         if(clazz == null){
             throw new DetectionException("Unsupported model");

@@ -1,10 +1,9 @@
-package cn.smartjavaai.cls.model;
+package cn.smartjavaai.zeroshot.model;
 
-import cn.smartjavaai.action.model.CommonActionRecModel;
-import cn.smartjavaai.cls.config.ClsModelConfig;
-import cn.smartjavaai.cls.enums.ClsModelEnum;
 import cn.smartjavaai.common.config.Config;
 import cn.smartjavaai.objectdetection.exception.DetectionException;
+import cn.smartjavaai.zeroshot.config.ZeroDetConfig;
+import cn.smartjavaai.zeroshot.enums.ZeroDetModelEnum;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
@@ -12,33 +11,33 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 图像分类 模型工厂
+ * 零样本目标检测 模型工厂
  * @author dwj
  */
 @Slf4j
-public class ClsModelFactory {
+public class ZeroDetModelFactory {
 
     // 使用 volatile 和双重检查锁定来确保线程安全的单例模式
-    private static volatile ClsModelFactory instance;
+    private static volatile ZeroDetModelFactory instance;
 
-    private static final ConcurrentHashMap<ClsModelEnum, ClsModel> modelMap = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<ZeroDetModelEnum, ZeroDetModel> modelMap = new ConcurrentHashMap<>();
 
     /**
      * 模型注册表
      */
-    private static final Map<ClsModelEnum, Class<? extends ClsModel>> registry =
+    private static final Map<ZeroDetModelEnum, Class<? extends ZeroDetModel>> registry =
             new ConcurrentHashMap<>();
 
 
     // 私有构造函数，防止外部创建实例
-    private ClsModelFactory() {}
+    private ZeroDetModelFactory() {}
 
     // 双重检查锁定的单例方法
-    public static ClsModelFactory getInstance() {
+    public static ZeroDetModelFactory getInstance() {
         if (instance == null) {
-            synchronized (ClsModelFactory.class) {
+            synchronized (ZeroDetModelFactory.class) {
                 if (instance == null) {
-                    instance = new ClsModelFactory();
+                    instance = new ZeroDetModelFactory();
                 }
             }
         }
@@ -50,7 +49,7 @@ public class ClsModelFactory {
      * @param config
      * @return
      */
-    public ClsModel getModel(ClsModelConfig config) {
+    public ZeroDetModel getModel(ZeroDetConfig config) {
         if(Objects.isNull(config) || Objects.isNull(config.getModelEnum())){
             throw new DetectionException("未配置模型");
         }
@@ -64,14 +63,14 @@ public class ClsModelFactory {
      * @param config
      * @return
      */
-    private ClsModel createModel(ClsModelConfig config) {
+    private ZeroDetModel createModel(ZeroDetConfig config) {
         Class<?> clazz = registry.get(config.getModelEnum());
         if(clazz == null){
             throw new DetectionException("Unsupported model");
         }
-        ClsModel model = null;
+        ZeroDetModel model = null;
         try {
-            model = (ClsModel) clazz.newInstance();
+            model = (ZeroDetModel) clazz.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
             throw new DetectionException(e);
         }
@@ -86,39 +85,25 @@ public class ClsModelFactory {
      * @param modelEnum
      * @param clazz
      */
-    private static void registerAlgorithm(ClsModelEnum modelEnum, Class<? extends ClsModel> clazz) {
+    private static void registerAlgorithm(ZeroDetModelEnum modelEnum, Class<? extends ZeroDetModel> clazz) {
         registry.put(modelEnum, clazz);
     }
 
-
-
-    // 初始化默认算法
-    static {
-        registerAlgorithm(ClsModelEnum.YOLOV8, CommonClsModel.class);
-        registerAlgorithm(ClsModelEnum.YOLOV11, CommonClsModel.class);
-        log.debug("缓存目录：{}", Config.getCachePath());
-    }
-
-    /**
-     * 关闭所有已加载的模型
-     */
-    public void closeAll() {
-        modelMap.values().forEach(model -> {
-            try {
-                model.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-        modelMap.clear();
-    }
 
     /**
      * 移除缓存的模型
      * @param modelEnum
      */
-    public static void removeFromCache(ClsModelEnum modelEnum) {
+    public static void removeFromCache(ZeroDetModelEnum modelEnum) {
         modelMap.remove(modelEnum);
+    }
+
+
+    // 初始化默认算法
+    static {
+        registerAlgorithm(ZeroDetModelEnum.YOLOV8S_WORLDV2, CommonZeroDetModel.class);
+        registerAlgorithm(ZeroDetModelEnum.OWLV2_BASE_PATCH16, CommonZeroDetModel.class);
+        log.debug("缓存目录：{}", Config.getCachePath());
     }
 }
 

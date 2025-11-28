@@ -7,7 +7,7 @@
     <name>SmartJavaAI</name>
     <groupId>cn.smartjavaai</groupId>
     <artifactId>smartjavaai-parent</artifactId>
-    <version>1.0.27</version>
+    <version>1.1.0</version>
     <packaging>pom</packaging>
     <description>SmartJavaAI</description>
     <modules>
@@ -26,7 +26,7 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <djl.version>0.32.0</djl.version>
+        <djl.version>0.34.0</djl.version>
     </properties>
 
     <dependencyManagement>

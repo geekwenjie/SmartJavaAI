@@ -1,7 +1,9 @@
 package cn.smartjavaai.face.model.liveness;
 
 import ai.djl.engine.Engine;
+import ai.djl.inference.Predictor;
 import ai.djl.modality.cv.Image;
+import ai.djl.modality.cv.output.DetectedObjects;
 import cn.smartjavaai.common.cv.SmartImageFactory;
 import cn.smartjavaai.common.entity.*;
 import cn.smartjavaai.common.entity.face.FaceInfo;
@@ -15,6 +17,8 @@ import cn.smartjavaai.common.enums.face.LivenessStatus;
 import cn.smartjavaai.face.constant.LivenessConstant;
 import cn.smartjavaai.face.exception.FaceException;
 import cn.smartjavaai.face.factory.LivenessModelFactory;
+import cn.smartjavaai.face.model.facedect.FaceDetectManager;
+import cn.smartjavaai.face.model.facedect.SeetaFace6FaceDetModel;
 import cn.smartjavaai.face.seetaface.NativeLoader;
 import cn.smartjavaai.face.utils.FaceUtils;
 import cn.smartjavaai.face.utils.Seetaface6Utils;
@@ -23,6 +27,7 @@ import com.seeta.sdk.*;
 import lombok.extern.slf4j.Slf4j;
 import nu.pattern.OpenCV;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.Java2DFrameUtils;
@@ -59,6 +64,9 @@ public class Seetaface6LivenessModel implements LivenessDetModel{
     public void loadModel(LivenessConfig config) {
         if(StringUtils.isBlank(config.getModelPath())){
             throw new FaceException("modelPath is null");
+        }
+        if(Objects.isNull(config.getDetectModel())){
+            throw new FaceException("未指定人脸检测模型");
         }
         this.config = config;
         //加载依赖库
@@ -176,10 +184,41 @@ public class Seetaface6LivenessModel implements LivenessDetModel{
         }
     }
 
+    private R<LivenessResult> detectVideoFrame(Image image, FaceDetectManager faceDetectManager, FaceAntiSpoofing faceAntiSpoofing) {
+        //检测人脸
+        R<DetectionInfo> detectResult = faceDetectManager.detectTopFace(image);
+        if(!detectResult.isSuccess()){
+            return R.fail(detectResult.getCode(), detectResult.getMessage());
+        }
+        DetectionInfo detectionInfo = detectResult.getData();
+        if(Objects.isNull(detectionInfo)){
+            return R.fail(R.Status.NO_FACE_DETECTED);
+        }
+        if(detectionInfo.getFaceInfo().getKeyPoints() == null || detectionInfo.getFaceInfo().getKeyPoints().isEmpty()){
+            return R.fail(1002,"人脸关键点keyPoints为空");
+        }
+        FaceAntiSpoofing.Status status = null;
+        try {
+            SeetaImageData imageData = new SeetaImageData(image.getWidth(), image.getHeight(), 3);
+            imageData.data = ImageUtils.getMatrixBGR(image);
+            SeetaRect seetaRect = Seetaface6Utils.convertToSeetaRect(detectionInfo.getDetectionRectangle());
+            SeetaPointF[] landmarks = Seetaface6Utils.convertToSeetaPointF(detectionInfo.getFaceInfo().getKeyPoints());
+            //检测视频
+            status = faceAntiSpoofing.PredictVideo(imageData, seetaRect, landmarks);
+            return R.ok(new LivenessResult(Seetaface6Utils.convertToLivenessStatus(status)));
+        } catch (Exception e) {
+            throw new FaceException("活体检测错误", e);
+        }
+    }
+
+
+
 
     private R<LivenessResult> detectVideo(FFmpegFrameGrabber grabber) {
         FaceAntiSpoofing faceAntiSpoofing = null;
-        try {
+        try (FaceDetectManager faceDetectManager = new FaceDetectManager(config.getDetectModel())){
+            //初始化predictors
+            faceDetectManager.borrowPredictors();
             faceAntiSpoofing = faceAntiSpoofingPool.borrowObject();
             //重置视频
             faceAntiSpoofing.ResetVideo();
@@ -194,14 +233,14 @@ public class Seetaface6LivenessModel implements LivenessDetModel{
             // 逐帧处理视频
             for (int frameIndex = 0; frameIndex < totalFrames; frameIndex++) {
                 if(frameIndex >= config.getMaxVideoDetectFrames()){
-                    return R.fail(10002, "超出最大检测帧数：" + config.getMaxVideoDetectFrames());
+                    return R.fail(10002, "视频中未检测到人脸，超出最大检测帧数：" + config.getMaxVideoDetectFrames());
                 }
                 // 获取当前帧
                 Frame frame = grabber.grabImage();
                 if (frame != null) {
                     BufferedImage bufferedImage = Java2DFrameUtils.toBufferedImage(frame);
                     Image image = SmartImageFactory.getInstance().fromBufferedImage(bufferedImage);
-                    R<LivenessResult> livenessStatus = detectTopFace(image, false);
+                    R<LivenessResult> livenessStatus = detectVideoFrame(image, faceDetectManager, faceAntiSpoofing);
                     if(!livenessStatus.isSuccess()){
                         log.debug("第" + frameIndex + "帧处理失败：" + livenessStatus.getMessage());
                         continue;
@@ -225,9 +264,16 @@ public class Seetaface6LivenessModel implements LivenessDetModel{
                     log.warn("归还Predictor失败", e);
                 }
             }
+            try {
+                grabber.release();
+            } catch (FFmpegFrameGrabber.Exception e) {
+                throw new RuntimeException(e);
+            }
         }
         return R.fail(1000, "有效帧数量不足，无法完成活体检测");
     }
+
+
 
     @Override
     public R<DetectionResponse> detect(Image image) {
@@ -246,7 +292,7 @@ public class Seetaface6LivenessModel implements LivenessDetModel{
                 imageData.data = ImageUtils.getMatrixBGR(image);
                 //检测人脸
                 SeetaRect[] seetaResult = detectPredictor.Detect(imageData);
-                if(Objects.isNull(seetaResult)){
+                if(Objects.isNull(seetaResult) || seetaResult.length == 0){
                     return R.fail(R.Status.NO_FACE_DETECTED);
                 }
                 for(SeetaRect seetaRect : seetaResult){
@@ -346,7 +392,7 @@ public class Seetaface6LivenessModel implements LivenessDetModel{
                 imageData.data = ImageUtils.getMatrixBGR(image);
                 //检测人脸
                 SeetaRect[] seetaResult = detectPredictor.Detect(imageData);
-                if(Objects.isNull(seetaResult)){
+                if(Objects.isNull(seetaResult) || seetaResult.length == 0){
                     return R.fail(R.Status.NO_FACE_DETECTED);
                 }
                 SeetaPointF[] landmarks = new SeetaPointF[faceLandmarker.number()];

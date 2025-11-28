@@ -12,7 +12,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <smartjavaai.version>1.0.27</smartjavaai.version>
+        <smartjavaai.version>1.1.0</smartjavaai.version>
         <!--如果打包运行，需要替换成你的main-->
         <exec.mainClass>smartai.examples.face.facedet.FaceDetDemo</exec.mainClass>
 
@@ -88,11 +88,10 @@
             <artifactId>face</artifactId>
         </dependency>
 
-
         <dependency>
             <groupId>ai.djl.pytorch</groupId>
             <artifactId>pytorch-jni</artifactId>
-            <version>2.5.1-0.32.0</version>
+            <version>2.7.1-0.34.0</version>
             <scope>runtime</scope>
         </dependency>
 
@@ -129,7 +128,7 @@
             <groupId>ai.djl.pytorch</groupId>
             <artifactId>pytorch-native-cpu</artifactId>
             <classifier>${djl.platform.windows-x86_64}</classifier>
-            <version>2.5.1</version>
+            <version>2.7.1</version>
             <scope>runtime</scope>
         </dependency>
 
@@ -167,19 +166,45 @@
             <groupId>ai.djl.pytorch</groupId>
             <artifactId>pytorch-native-cpu</artifactId>
             <classifier>${djl.platform.linux-x86_64}</classifier>
-            <version>2.5.1</version>
+            <version>2.7.1</version>
             <scope>runtime</scope>
+        </dependency>
+
+        <!-- linux aarch64 平台 (保留对应平台的配置，可以减小包大小)-->
+        <dependency>
+            <groupId>org.bytedeco</groupId>
+            <artifactId>javacpp</artifactId>
+            <version>${javacv.version}</version>
+            <classifier>${javacv.platform.linux-arm64}</classifier>
         </dependency>
         <dependency>
-            <groupId>ai.djl.pytorch</groupId>
-            <artifactId>pytorch-native-cpu-precxx11</artifactId>
-            <classifier>${djl.platform.linux-x86_64}</classifier>
-            <version>2.5.1</version>
-            <scope>runtime</scope>
+            <groupId>org.bytedeco</groupId>
+            <artifactId>ffmpeg</artifactId>
+            <version>6.1.1-1.5.10</version>
+            <classifier>${javacv.platform.linux-arm64}</classifier>
         </dependency>
 
+        <dependency>
+            <groupId>org.bytedeco</groupId>
+            <artifactId>openblas</artifactId>
+            <version>0.3.26-1.5.10</version>
+            <classifier>${javacv.platform.linux-arm64}</classifier>
+        </dependency>
 
+        <dependency>
+            <groupId>org.bytedeco</groupId>
+            <artifactId>opencv</artifactId>
+            <version>4.9.0-1.5.10</version>
+            <classifier>${javacv.platform.linux-arm64}</classifier>
+        </dependency>
 
+        <dependency>
+            <groupId>ai.djl.pytorch</groupId>
+            <artifactId>pytorch-native-cpu</artifactId>
+            <classifier>${djl.platform.linux-aarch64}</classifier>
+            <version>2.7.1</version>
+            <scope>runtime</scope>
+        </dependency>
 
         <!-- macOS M系列 平台  (保留对应平台的配置，可以减小包大小)-->
         <dependency>
@@ -213,7 +238,7 @@
             <groupId>ai.djl.pytorch</groupId>
             <artifactId>pytorch-native-cpu</artifactId>
             <classifier>${djl.platform.osx-aarch64}</classifier>
-            <version>2.5.1</version>
+            <version>2.7.1</version>
             <scope>runtime</scope>
         </dependency>
 
