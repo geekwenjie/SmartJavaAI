@@ -24,6 +24,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.file.Path;
@@ -145,6 +146,19 @@ public class SmartImageFactory {
 
     public Image fromInputStream(InputStream inputStream) throws IOException {
         return ImageFactory.getInstance().fromInputStream(inputStream);
+    }
+
+    public Image fromUrl(URL url) throws IOException {
+        if (url == null) {
+            throw new IllegalArgumentException("URL 不能为空");
+        }
+        try (InputStream inputStream = url.openStream()) {
+            return ImageFactory.getInstance().fromInputStream(inputStream);
+        }
+    }
+
+    public Image fromUrl(String urlString) throws IOException {
+        return this.fromUrl(new URL(urlString));
     }
 
 
