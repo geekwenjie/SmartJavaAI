@@ -29,9 +29,13 @@ public class CriteriaBuilderFactory {
         switch (config.getModelEnum()) {
             case YOLOV8_OFFICIAL_ONNX:
                 return new YoloCriteriaBuilder().buildCriteria(config);
+            case YOLOV11_OFFICIAL_ONNX:
+                return new YoloCriteriaBuilder().buildCriteria(config);
             case YOLOV12_OFFICIAL_ONNX:
                 return new YoloCriteriaBuilder().buildCriteria(config);
             case YOLOV8_CUSTOM_ONNX:
+                return new YoloCriteriaBuilder().buildCriteria(config);
+            case YOLOV11_CUSTOM_ONNX:
                 return new YoloCriteriaBuilder().buildCriteria(config);
             case YOLOV12_CUSTOM_ONNX:
                 return new YoloCriteriaBuilder().buildCriteria(config);
