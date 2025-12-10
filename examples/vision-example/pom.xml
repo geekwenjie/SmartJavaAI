@@ -241,16 +241,9 @@
         <dependency>
             <groupId>ai.djl.tensorflow</groupId>
             <artifactId>tensorflow-native-cpu</artifactId>
-            <classifier>${javacv.platform.linux-arm64}</classifier>
+            <classifier>${djl.platform.linux-aarch64}</classifier>
             <scope>runtime</scope>
             <version>2.16.1</version>
-        </dependency>
-        <dependency>
-            <groupId>ai.djl.mxnet</groupId>
-            <artifactId>mxnet-native-mkl</artifactId>
-            <classifier>${javacv.platform.linux-arm64}</classifier>
-            <scope>runtime</scope>
-            <version>1.9.1</version>
         </dependency>
 
 
