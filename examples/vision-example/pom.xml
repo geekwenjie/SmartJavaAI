@@ -86,6 +86,19 @@
         <dependency>
             <groupId>cn.smartjavaai</groupId>
             <artifactId>vision</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.microsoft.onnxruntime</groupId>
+                    <artifactId>onnxruntime</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.microsoft.onnxruntime</groupId>
+            <artifactId>onnxruntime</artifactId>
+            <version>1.20.0</version>
+            <scope>runtime</scope>
         </dependency>
 
 
