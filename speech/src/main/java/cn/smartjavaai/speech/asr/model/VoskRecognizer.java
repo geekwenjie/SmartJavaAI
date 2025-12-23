@@ -56,6 +56,8 @@ public class VoskRecognizer implements SpeechRecognizer{
     @Override
     public void loadModel(AsrModelConfig config) {
         this.config = config;
+        //防止中文乱码
+        System.setProperty("jna.encoding","utf-8");
         if(StringUtils.isBlank(config.getModelPath())){
             throw new AsrException("modelPath is null");
         }
