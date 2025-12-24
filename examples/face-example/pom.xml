@@ -14,7 +14,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <smartjavaai.version>1.1.0</smartjavaai.version>
         <!--如果打包运行，需要替换成你的main-->
-        <exec.mainClass>smartai.examples.face.facedet.FaceDetDemo</exec.mainClass>
+        <exec.mainClass>smartai.examples.face.FaceDemo</exec.mainClass>
 
         <javacv.version>1.5.10</javacv.version>
 
