@@ -12,7 +12,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <smartjavaai.version>1.1.0</smartjavaai.version>
+        <smartjavaai.version>1.1.1</smartjavaai.version>
         <!--如果打包运行，需要替换成你的main-->
         <exec.mainClass>smartai.examples.vision.ObjectDetectionDemo</exec.mainClass>
 
@@ -86,6 +86,19 @@
         <dependency>
             <groupId>cn.smartjavaai</groupId>
             <artifactId>vision</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.microsoft.onnxruntime</groupId>
+                    <artifactId>onnxruntime</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.microsoft.onnxruntime</groupId>
+            <artifactId>onnxruntime</artifactId>
+            <version>1.20.0</version>
+            <scope>runtime</scope>
         </dependency>
 
 
@@ -241,16 +254,9 @@
         <dependency>
             <groupId>ai.djl.tensorflow</groupId>
             <artifactId>tensorflow-native-cpu</artifactId>
-            <classifier>${javacv.platform.linux-arm64}</classifier>
+            <classifier>${djl.platform.linux-aarch64}</classifier>
             <scope>runtime</scope>
             <version>2.16.1</version>
-        </dependency>
-        <dependency>
-            <groupId>ai.djl.mxnet</groupId>
-            <artifactId>mxnet-native-mkl</artifactId>
-            <classifier>${javacv.platform.linux-arm64}</classifier>
-            <scope>runtime</scope>
-            <version>1.9.1</version>
         </dependency>
 
 

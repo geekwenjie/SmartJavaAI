@@ -205,13 +205,16 @@ public class ObjectDetectionDemo {
      */
     @Test
     public void testStream(){
+
         StreamDetector detector = new StreamDetector.Builder()
                 //视频源类型：支持视频流、本地摄像头、视频文件
                 .sourceType(VideoSourceType.STREAM)
                 //视频流地址，支持rtsp、rtmp、http等常见视频流
-                .streamUrl("rtsp://username:password@ip:port/Streaming/Channels/101")
+                .streamUrl("rtsp://127.0.0.1:8554/stream")
                 //每隔多少帧检测一次（需要根据模型检测速度决定）
                 .frameDetectionInterval(10)
+                //是否打印调试日志
+                .enableDebugLog(false)
                 //目标检测模型
                 .detectorModel(getModel())
                 //回调函数：检测到指定目标时触发（getModel中可指定模型检测的物体）
@@ -246,6 +249,7 @@ public class ObjectDetectionDemo {
                     }
                 }).build();
         detector.startDetection();
+
         //阻塞主线程
         CountDownLatch latch = new CountDownLatch(1);
         try {
@@ -319,8 +323,6 @@ public class ObjectDetectionDemo {
                 .frameDetectionInterval(5)
                 //目标检测模型
                 .detectorModel(getModel())
-                //同物体重复检测时间间隔，单位s
-                .repeatGap(5)
                 //回调函数：检测到指定目标时触发（getModel中可指定模型检测的物体）
                 .listener(new StreamDetectionListener() {
                     @Override

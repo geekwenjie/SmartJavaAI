@@ -7,7 +7,7 @@
     <name>SmartJavaAI</name>
     <groupId>cn.smartjavaai</groupId>
     <artifactId>smartjavaai-parent</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1</version>
     <packaging>pom</packaging>
     <description>SmartJavaAI</description>
     <modules>
@@ -109,7 +109,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.4</version>
+            <version>1.18.34</version>
         </dependency>
 
 

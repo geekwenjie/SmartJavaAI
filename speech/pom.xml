@@ -6,7 +6,7 @@
     <parent>
         <groupId>cn.smartjavaai</groupId>
         <artifactId>smartjavaai-parent</artifactId>
-        <version>1.1.0</version>
+        <version>1.1.1</version>
     </parent>
 
     <artifactId>speech</artifactId>
@@ -57,7 +57,7 @@
     </dependencies>
 
 
-    <version>1.1.0</version>
+    <version>1.1.1</version>
     <name>speech</name>
     <description>SmartJavaAI</description>
     <url>https://github.com/geekwenjie/SmartJavaAI</url>

@@ -49,13 +49,14 @@ public class StreamDetector implements AutoCloseable{
     //回调线程池
     ExecutorService callbackExecutor;
     private int frameDetectionInterval = 1;
-    private long repeatGap = 5; // 秒
     private volatile boolean isRunning;
     private FrameGrabber grabber;
     private StreamDetectionListener listener;
     private OpenCVFrameConverter.ToOrgOpenCvCoreMat converterToMat;
     private VideoSourceType sourceType = VideoSourceType.STREAM; // 默认流
     private int cameraIndex = 0; // 默认第一个摄像头
+
+    private boolean enableDebugLog; //是否开启debug log
 
     private Map<String, Long> lastDetectTime = new ConcurrentHashMap<>();
     private BlockingQueue<Frame> frameQueue = new LinkedBlockingQueue<>(100);
@@ -84,7 +85,8 @@ public class StreamDetector implements AutoCloseable{
         this.listener = builder.listener;
         this.sourceType = builder.sourceType;
         this.cameraIndex = builder.cameraIndex;
-        this.repeatGap = builder.repeatGap;
+//        this.repeatGap = builder.repeatGap;
+        this.enableDebugLog = builder.enableDebugLog;
         this.converterToMat = new OpenCVFrameConverter.ToOrgOpenCvCoreMat();
     }
 
@@ -160,7 +162,7 @@ public class StreamDetector implements AutoCloseable{
      * 负责抓取视频帧到队列
      */
     private void processFrames() {
-        long frameCount = 0;
+        long detectCounter = 0;
         while (!grabberFinished && isRunning) {
             try {
                 Frame frame = grabber.grabFrame();
@@ -192,11 +194,16 @@ public class StreamDetector implements AutoCloseable{
                         continue;
                     }
                 }
-                frameCount++;
-                if (frameCount % frameDetectionInterval != 0) continue;
+                detectCounter++;
+                if (detectCounter < frameDetectionInterval) {
+                    continue;
+                }
+                detectCounter = 0;
                 Frame currentFrame = frame.clone();
                 frameQueue.offer(currentFrame);
-//                log.debug("正在抓取第{}帧，当前帧数：{}", frameCount, frameQueue.size());
+                if (enableDebugLog){
+                    log.debug("当前未处理帧数：{}", frameQueue.size());
+                }
             } catch (Exception e) {
                 log.error("抓取视频帧异常", e);
             }
@@ -242,16 +249,15 @@ public class StreamDetector implements AutoCloseable{
 
             Image image = SmartImageFactory.getInstance().fromMat(mat);
             DetectedObjects detectedObjects = predictor.predict(image);
-//            log.info("内部检测结果：{}", detectedObjects.toString());
+            if (enableDebugLog){
+                log.debug("帧检测结果：{}", detectedObjects.toString());
+            }
             DetectionResponse detectionResponse = DetectorUtils.convertToDetectionResponse(detectedObjects, image);
             if(Objects.isNull(detectionResponse)){
                 return;
             }
-            List<DetectionInfo> filtered = filterRepeatedObjects(detectionResponse);
-            if (!filtered.isEmpty() && listener != null) {
-                Image copyImage = image.duplicate();
-                callbackExecutor.submit(() -> listener.onObjectDetected(filtered, copyImage));
-            }
+            Image copyImage = image.duplicate();
+            callbackExecutor.submit(() -> listener.onObjectDetected(detectionResponse.getDetectionInfoList(), copyImage));
         } catch (Throwable e) {
             e.printStackTrace();
             log.error("单帧处理异常", e);
@@ -259,21 +265,6 @@ public class StreamDetector implements AutoCloseable{
             if (mat != null) mat.release();
         }
     }
-
-    private List<DetectionInfo> filterRepeatedObjects(DetectionResponse response) {
-        List<DetectionInfo> result = new ArrayList<>();
-        long now = System.currentTimeMillis();
-        for (DetectionInfo info : response.getDetectionInfoList()) {
-            String name = info.getObjectDetInfo().getClassName();
-            Long last = lastDetectTime.get(name);
-            if (last == null || (now - last) > repeatGap * 1000) {
-                lastDetectTime.put(name, now);
-                result.add(info);
-            }
-        }
-        return result;
-    }
-
 
     /**
      * 开始检测下一个视频文件
@@ -322,10 +313,6 @@ public class StreamDetector implements AutoCloseable{
 
     @Override
     public void close() {
-//        if(isRunning){
-//            System.out.println("--isRunning：" + isRunning);
-//            stopDetection();
-//        }
         if (grabberExecutor != null){
             grabberExecutor.shutdownNow();
         }
@@ -345,15 +332,11 @@ public class StreamDetector implements AutoCloseable{
         private VideoSourceType sourceType = VideoSourceType.STREAM; // 默认流
         private int cameraIndex = 0; // 默认第一个摄像头
 
-        private long repeatGap = 5;//同物体重复检测间隔
+        private boolean enableDebugLog; //是否开启debug log
 
         public Builder detectorModel(DetectorModel m) { this.detectorModel = m; return this; }
         public Builder streamUrl(String url) { this.streamUrl = url; return this; }
         public Builder listener(StreamDetectionListener listener) { this.listener = listener; return this; }
-        public Builder repeatGap(long repeatGap) {
-            this.repeatGap = repeatGap;
-            return this;
-        }
         public Builder sourceType(VideoSourceType sourceType) {
             this.sourceType = sourceType;
             return this;
@@ -365,6 +348,11 @@ public class StreamDetector implements AutoCloseable{
         public Builder frameDetectionInterval(int interval) {
             if (interval < 1) throw new IllegalArgumentException("frameDetectionInterval >= 1");
             this.frameDetectionInterval = interval;
+            return this;
+        }
+
+        public Builder enableDebugLog(boolean enableDebugLog) {
+            this.enableDebugLog = enableDebugLog;
             return this;
         }
 
