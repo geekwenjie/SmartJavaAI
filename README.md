@@ -42,7 +42,33 @@
 ## 🚀  能力展示
 
 <div align="center">
-  <table>
+  <table>      
+    <tr>
+      <td>
+        <div align="left">
+          <p>人脸检测(Face Detection)</p>   
+         - 5点人脸关键点定位 <br>
+        </div>
+      </td>     
+      <td>
+        <div align="center">
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/face5point.png" width = "500px"/>
+        </div>
+      </td>
+    </tr>          
+    <tr>
+      <td>
+        <div align="left">
+          <p>人脸比对1：1<br>(Face Recognition)</p>
+          - 人脸对齐 <br>
+        </div>
+      </td>     
+      <td>
+        <div align="center">
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/face1-1.jpg" width = "500px"/>
+        </div>
+      </td>
+    </tr>
     <tr>
       <td>
         <div align="left">
