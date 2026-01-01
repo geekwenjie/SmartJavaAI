@@ -46,11 +46,7 @@ SmartJavaAI是专为JAVA 开发者打造的一个功能丰富、开箱即用的 
 
 如果您有移动端离线人脸识别的需求，我们推出了基于 SmartJavaAI 的 Android SDK 及演示 APP。
 
-* 🚀 **核心能力**：毫秒级离线人脸检测、比对、注册与 1:N 搜索。
-* 📦 **开箱即用**：提供标准 SDK 接口与完整 Demo APK。
-* 💼 **授权**：Android 版本需要申请授权。
 
-👉 **[点击查看 Android 版演示截图、APK 下载及获取方式](./android.md)**
 
 
 
