@@ -42,7 +42,15 @@
 ## 🚀  能力展示
 
 <div align="center">
-  <table>
+  <table>      
+    <tr>
+      <td>
+        <div align="left">
+          <p>人脸检测(Face Detection)</p>   
+         - 5点人脸关键点定位 <br>
+        </div>
+      </td>
+    </tr>
     <tr>
       <td>
         <div align="left">
