@@ -42,158 +42,7 @@
 ## 🚀  能力展示
 
 <div align="center">
-  <table>      
-    <tr>
-      <td>
-        <div align="left">
-          <p>人脸检测(Face Detection)</p>   
-         - 5点人脸关键点定位 <br>
-        </div>
-      </td>     
-      <td>
-        <div align="center">
-        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/face5point.png" width = "500px"/>
-        </div>
-      </td>
-    </tr>          
-    <tr>
-      <td>
-        <div align="left">
-          <p>人脸比对1：1<br>(Face Recognition)</p>
-          - 人脸对齐 <br>
-        </div>
-      </td>     
-      <td>
-        <div align="center">
-        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/face1-1.jpg" width = "500px"/>
-        </div>
-      </td>
-    </tr>  
-    <tr>
-      <td>
-        <div align="left">
-          <p>人证核验<br>(Face ID Verification)</p>
-        </div>
-      </td>     
-      <td>
-        <div align="center">
-        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/idcard.png" width = "500px"/>
-        </div>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <div align="left">
-          <p>人脸比对1：N<br>(Face Recognition)</p>  
-          - 人脸对齐 <br>
-          - 人脸注册 <br>
-          - 人脸库查询<br>
-          - 人脸库删除<br>
-        </div>
-      </td>     
-      <td>
-        <div align="center">
-        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/face1-n.png" width = "500px"/>
-        </div>
-      </td>
-    </tr>  
-    <tr>
-      <td>
-        <div align="left">
-          <p>人脸属性检测</p>  
-          - 性别检测(GenderDetection) <br>
-          - 年龄检测(AgeDetection) <br>
-          - 口罩检测(Face Mask Detection)<br>
-          - 眼睛状态检测(EyeClosenessDetection)<br>
-          - 脸部姿态检测(FacePoseEstimation)<br>
-        </div>
-      </td>     
-      <td>
-        <div align="center">
-        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/face_attribute.jpg" width = "500px"/>
-        </div>
-      </td>
-    </tr> 
-    <tr>
-      <td>
-        <div align="left">
-          <p>活体检测<br>(FaceLivenessDetection)</p>  
-          - 图片和视频活体检测 <br>
-        </div>
-      </td>     
-      <td>
-        <div align="center">
-        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/liveness2.jpg" width = "500px"/>
-        </div>
-      </td>
-    </tr> 
-  <tr>
-      <td>
-        <div align="left">
-          <p>人脸表情识别<br>(FacialExpressionRecognition)</p>  
-          - 7种表情检测 <br>
-        </div>
-      </td>     
-      <td>
-        <div align="center">
-        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/emotion.jpg" width = "500px"/>
-        </div>
-      </td>
-    </tr> 
-  <tr>
-      <td>
-        <div align="left">
-          <p>图像分类<br>(Image Classification)</p>
-        </div>
-      </td>     
-      <td>
-        <div align="center">
-        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/vision/cls.png" height = "300px"/>
-        </div>
-      </td>
-    </tr>
-   <tr>
-      <td>
-        <div align="left">
-          <p>目标检测(Object Detection)</p>
-          - 视频流目标检测：rtsp、摄像头、视频文件等 <br>
-        </div>
-      </td>     
-      <td>
-        <div align="center">
-        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/objectdect/object_detect_1.jpeg" width = "500px"/>
-        </div>
-      </td>
-      <td>
-        <div align="center">
-        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/objectdect/object_detection_detected.jpg" width = "500px"/>
-        </div>
-      </td>
-    </tr>
- <tr>
-      <td>
-        <div align="left">
-          <p>语义分割<br>(Semantic Segmentation)</p>
-        </div>
-      </td>     
-      <td>
-        <div align="center">
-        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/objectdect/dog_bike_car_semseg.png" height = "300px"/>
-        </div>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <div align="left">
-          <p>实例分割<br>(Instance Segmentation)</p>
-        </div>
-      </td>     
-      <td>
-        <div align="center">
-        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/objectdect/dog_bike_car_instance.png" height = "300px"/>
-        </div>
-      </td>
-    </tr>
+  <table>
     <tr>
       <td>
         <div align="left">
@@ -242,7 +91,19 @@
         </div>
       </td>
     </tr>
-
+ <tr>
+      <td>
+        <div align="left">
+          <p>零样本目标检测<br>(ZeroShot Object Detection)</p>
+      - YOLO-World 模型 <br>
+        </div>
+      </td>     
+      <td>
+        <div align="center">
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/vision/yolo-world.png" height = "200px"/>
+        </div>
+      </td>
+    </tr>
   <tr>
       <td>
         <div align="left">
