@@ -96,61 +96,6 @@
         <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/face1-n.png" width = "500px"/>
         </div>
       </td>
-    </tr>  
-    <tr>
-      <td>
-        <div align="left">
-          <p>人脸属性检测</p>  
-          - 性别检测(GenderDetection) <br>
-          - 年龄检测(AgeDetection) <br>
-          - 口罩检测(Face Mask Detection)<br>
-          - 眼睛状态检测(EyeClosenessDetection)<br>
-          - 脸部姿态检测(FacePoseEstimation)<br>
-        </div>
-      </td>     
-      <td>
-        <div align="center">
-        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/face_attribute.jpg" width = "500px"/>
-        </div>
-      </td>
-    </tr> 
-    <tr>
-      <td>
-        <div align="left">
-          <p>活体检测<br>(FaceLivenessDetection)</p>  
-          - 图片和视频活体检测 <br>
-        </div>
-      </td>     
-      <td>
-        <div align="center">
-        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/liveness2.jpg" width = "500px"/>
-        </div>
-      </td>
-    </tr> 
-  <tr>
-      <td>
-        <div align="left">
-          <p>人脸表情识别<br>(FacialExpressionRecognition)</p>  
-          - 7种表情检测 <br>
-        </div>
-      </td>     
-      <td>
-        <div align="center">
-        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/emotion.jpg" width = "500px"/>
-        </div>
-      </td>
-    </tr> 
-  <tr>
-      <td>
-        <div align="left">
-          <p>图像分类<br>(Image Classification)</p>
-        </div>
-      </td>     
-      <td>
-        <div align="center">
-        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/vision/cls.png" height = "300px"/>
-        </div>
-      </td>
     </tr>
     <tr>
       <td>
