@@ -49,6 +49,11 @@
           <p>人脸检测(Face Detection)</p>   
          - 5点人脸关键点定位 <br>
         </div>
+      </td>     
+      <td>
+        <div align="center">
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/face5point1.png" width = "500px"/>
+        </div>
       </td>
     </tr>
     <tr>
