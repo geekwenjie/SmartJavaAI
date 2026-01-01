@@ -500,13 +500,7 @@ SmartJavaAI是专为JAVA 开发者打造的一个功能丰富、开箱即用的 
 
 详细引入方式请查看 [文档](http://doc.smartjavaai.cn/install.html)、或查看[示例代码](https://gitee.com/dengwenjie/SmartJavaAI/tree/master/examples)
 
-```xml
-<dependency>
-    <groupId>cn.smartjavaai</groupId>
-    <artifactId>all</artifactId>
-    <version>1.1.1</version>
-</dependency>
-```
+
 
 ### 3、完整示例代码
 
