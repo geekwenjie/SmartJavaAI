@@ -50,19 +50,24 @@ SmartJavaAI是专为JAVA 开发者打造的一个功能丰富、开箱即用的 
 
 <div align="center">
   <table>
-  <tr>
+   <tr>
       <td>
         <div align="left">
-          <p>图像分类<br>(Image Classification)</p>
+          <p>目标检测(Object Detection)</p>
+          - 视频流目标检测：rtsp、摄像头、视频文件等 <br>
         </div>
       </td>     
       <td>
         <div align="center">
-        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/vision/cls.png" height = "300px"/>
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/objectdect/object_detect_1.jpeg" width = "500px"/>
+        </div>
+      </td>
+      <td>
+        <div align="center">
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/objectdect/object_detection_detected.jpg" width = "500px"/>
         </div>
       </td>
     </tr>
-   
  <tr>
       <td>
         <div align="left">
