@@ -58,20 +58,7 @@ SmartJavaAI是专为JAVA 开发者打造的一个功能丰富、开箱即用的 
 ## 🚀  能力展示
 
 <div align="center">
-  <table>      
-    <tr>
-      <td>
-        <div align="left">
-          <p>人脸检测(Face Detection)</p>   
-         - 5点人脸关键点定位 <br>
-        </div>
-      </td>     
-      <td>
-        <div align="center">
-        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/face5point1.png" width = "500px"/>
-        </div>
-      </td>
-    </tr>          
+  <table>       
     <tr>
       <td>
         <div align="left">
