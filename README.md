@@ -45,7 +45,317 @@ SmartJavaAI是专为JAVA 开发者打造的一个功能丰富、开箱即用的 
 
 ## 🚀  能力展示
 
-
+<div align="center">
+  <table>       
+    <tr>
+      <td>
+        <div align="left">
+          <p>人脸比对1：1<br>(Face Recognition)</p>
+          - 人脸对齐 <br>
+        </div>
+      </td>     
+      <td>
+        <div align="center">
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/face1-1.jpg" width = "500px"/>
+        </div>
+      </td>
+    </tr>  
+    <tr>
+      <td>
+        <div align="left">
+          <p>人证核验<br>(Face ID Verification)</p>
+        </div>
+      </td>     
+      <td>
+        <div align="center">
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/idcard.png" width = "500px"/>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div align="left">
+          <p>人脸比对1：N<br>(Face Recognition)</p>  
+          - 人脸对齐 <br>
+          - 人脸注册 <br>
+          - 人脸库查询<br>
+          - 人脸库删除<br>
+        </div>
+      </td>     
+      <td>
+        <div align="center">
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/face1-n.png" width = "500px"/>
+        </div>
+      </td>
+    </tr>  
+    <tr>
+      <td>
+        <div align="left">
+          <p>人脸属性检测</p>  
+          - 性别检测(GenderDetection) <br>
+          - 年龄检测(AgeDetection) <br>
+          - 口罩检测(Face Mask Detection)<br>
+          - 眼睛状态检测(EyeClosenessDetection)<br>
+          - 脸部姿态检测(FacePoseEstimation)<br>
+        </div>
+      </td>     
+      <td>
+        <div align="center">
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/face_attribute.jpg" width = "500px"/>
+        </div>
+      </td>
+    </tr> 
+    <tr>
+      <td>
+        <div align="left">
+          <p>活体检测<br>(FaceLivenessDetection)</p>  
+          - 图片和视频活体检测 <br>
+        </div>
+      </td>     
+      <td>
+        <div align="center">
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/liveness2.jpg" width = "500px"/>
+        </div>
+      </td>
+    </tr> 
+  <tr>
+      <td>
+        <div align="left">
+          <p>人脸表情识别<br>(FacialExpressionRecognition)</p>  
+          - 7种表情检测 <br>
+        </div>
+      </td>     
+      <td>
+        <div align="center">
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/emotion.jpg" width = "500px"/>
+        </div>
+      </td>
+    </tr> 
+  <tr>
+      <td>
+        <div align="left">
+          <p>图像分类<br>(Image Classification)</p>
+        </div>
+      </td>     
+      <td>
+        <div align="center">
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/vision/cls.png" height = "300px"/>
+        </div>
+      </td>
+    </tr>
+   <tr>
+      <td>
+        <div align="left">
+          <p>目标检测(Object Detection)</p>
+          - 视频流目标检测：rtsp、摄像头、视频文件等 <br>
+        </div>
+      </td>
+      <td>
+        <div align="center">
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/objectdect/object_detection_detected.jpg" width = "500px"/>
+        </div>
+      </td>
+    </tr>
+ <tr>
+      <td>
+        <div align="left">
+          <p>语义分割<br>(Semantic Segmentation)</p>
+        </div>
+      </td>     
+      <td>
+        <div align="center">
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/objectdect/dog_bike_car_semseg.png" height = "300px"/>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div align="left">
+          <p>实例分割<br>(Instance Segmentation)</p>
+        </div>
+      </td>     
+      <td>
+        <div align="center">
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/objectdect/dog_bike_car_instance.png" height = "300px"/>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div align="left">
+          <p>自定义目标训练+检测<br>(Object Detection)</p>
+        </div>
+      </td>     
+      <td>
+        <div align="center">
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/objectdect_train/result.jpg" height = "300px"/>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div align="left">
+          <p>行人检测(Person Detection)</p>
+        </div>
+      </td>     
+      <td>
+        <div align="center">
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/objectdect/person_detected.png" height = "300px"/>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div align="left">
+          <p>人类动作识别<br>(Action Recognition)</p>
+        </div>
+      </td>     
+      <td>
+        <div align="center">
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/objectdect/calling.jpg" height = "300px"/>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div align="left">
+          <p>OBB旋转框检测<br>(Oriented Bounding Boxes Object Detection)</p>
+        </div>
+      </td>     
+      <td>
+        <div align="center">
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/objectdect/boats_detected.jpg" height = "200px"/>
+        </div>
+      </td>
+    </tr>
+ <tr>
+      <td>
+        <div align="left">
+          <p>零样本目标检测<br>(ZeroShot Object Detection)</p>
+      - YOLO-World 模型 <br>
+        </div>
+      </td>     
+      <td>
+        <div align="center">
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/vision/yolo-world.png" height = "200px"/>
+        </div>
+      </td>
+    </tr>
+  <tr>
+      <td>
+        <div align="left">
+          <p>姿态估计<br>(Pose Estimation)</p>
+        </div>
+      </td>     
+      <td>
+        <div align="center">
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/objectdect/pose_detected.png" height = "300px"/>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div align="left">
+          <p>OCR文字识别<br>(Text Recognition)</p>
+          - 支持任意角度文字识别 <br>
+          - 支持印刷体识别 <br>
+          - 支持手写字识别<br>
+        </div>
+      </td>     
+      <td>
+        <div align="center">
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/ocr/general_ocr_002_recognized.png" width = "500px"/>
+        </div>
+      </td>
+    </tr> 
+  <tr>
+      <td>
+        <div align="left">
+          <p>OCR文字识别</p>
+          - 表格识别<br>(Table Structure Recognition) <br>
+        </div>
+      </td>     
+      <td>
+        <div align="center">
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/ocr/table.jpg" width = "500px"/>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div align="left">
+          <p>车牌识别<br>(License Plate Recognition)</p>
+          - 单层/双层检测 <br>
+          - 车牌颜色识别 <br>
+        </div>
+      </td>     
+      <td>
+        <div align="center">
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/ocr/plate_recognized.jpg" width = "500px"/>
+        </div>
+      </td>
+      <td>
+        <div align="center">
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/ocr/plate_recognized2.jpg" width = "500px"/>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div align="left">
+          <p>机器翻译<br>(Machine Translation)</p>
+          - 200多种语言互相翻译
+        </div>
+      </td>     
+      <td>
+        <div align="center">
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/translate/translate.png" width = "500px"/>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div align="left">
+          <p>语音识别<br>(Speech Recognition)</p>
+          - 支持100种语言<br>
+          - 支持实时语音识别
+        </div>
+      </td>     
+      <td>
+        <div align="center">
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/speech/asr.png" width = "500px"/>
+        </div>
+      </td>
+    </tr>
+  <tr>
+      <td>
+        <div align="left">
+          <p>语音合成(ASR)</p>
+        </div>
+      </td>     
+      <td>
+        <div align="center">
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/speech/tts.jpg" width = "500px"/>
+        </div>
+      </td>
+    </tr>
+  <tr>
+      <td>
+        <div align="left">
+          <p>CLIP</p>
+          - 文搜图 <br>
+          - 图搜图 <br>
+          - 图搜文<br>
+        </div>
+      </td>     
+      <td>
+        <div align="center">
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/vision/clip.png" width = "500px"/>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
 
 
 
