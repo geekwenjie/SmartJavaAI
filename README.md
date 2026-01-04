@@ -251,33 +251,7 @@ SmartJavaAI是专为JAVA 开发者打造的一个功能丰富、开箱即用的 
         </div>
       </td>
     </tr>
-  <tr>
-      <td>
-        <div align="left">
-          <p>语音合成(ASR)</p>
-        </div>
-      </td>     
-      <td>
-        <div align="center">
-        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/speech/tts.jpg" width = "500px"/>
-        </div>
-      </td>
-    </tr>
-  <tr>
-      <td>
-        <div align="left">
-          <p>CLIP</p>
-          - 文搜图 <br>
-          - 图搜图 <br>
-          - 图搜文<br>
-        </div>
-      </td>     
-      <td>
-        <div align="center">
-        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/vision/clip.png" width = "500px"/>
-        </div>
-      </td>
-    </tr>
+  
   </table>
 </div>
 
