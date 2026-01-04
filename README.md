@@ -40,17 +40,6 @@
 SmartJavaAI是专为JAVA 开发者打造的一个功能丰富、开箱即用的 JAVA AI算法工具包，致力于帮助JAVA开发者零门槛使用各种AI算法模型，开发者无需深入了解底层实现，即可轻松在 Java 代码中调用人脸识别、目标检测、OCR 等功能。底层支持包括基于 DJL (Deep Java Library) 封装的深度学习模型，以及通过 JNI 接入的 C++/Python 算法，兼容多种主流深度学习框架如 PyTorch、TensorFlow、ONNX、Paddle 等，屏蔽复杂的模型部署与调用细节，开发者无需了解 AI 底层实现即可直接在 Java 项目中集成使用，后续将持续扩展更多算法，目标是构建一个“像 Hutool 一样简单易用”的 JAVA AI 通用工具箱
 
 
-## 📱 SmartJavaAI Android 商业版
-
-**SmartJavaAI 现已支持 Android 移动端！**
-
-如果您有移动端离线人脸识别的需求，我们推出了基于 SmartJavaAI 的 Android SDK 及演示 APP。
-
-* 🚀 **核心能力**：毫秒级离线人脸检测、比对、注册与 1:N 搜索。
-* 📦 **开箱即用**：提供标准 SDK 接口与完整 Demo APK。
-* 💼 **商业授权**：Android 版本为商业授权版本。
-
-👉 **[点击查看 Android 版演示截图、APK 下载及获取方式](./android.md)**
 
 
 
@@ -58,7 +47,7 @@ SmartJavaAI是专为JAVA 开发者打造的一个功能丰富、开箱即用的 
 ## 🚀  能力展示
 
 <div align="center">
-  <table>       
+  <table>
     <tr>
       <td>
         <div align="left">
