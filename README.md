@@ -50,6 +50,19 @@ SmartJavaAI是专为JAVA 开发者打造的一个功能丰富、开箱即用的 
 
 <div align="center">
   <table>
+  <tr>
+      <td>
+        <div align="left">
+          <p>图像分类<br>(Image Classification)</p>
+        </div>
+      </td>     
+      <td>
+        <div align="center">
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/vision/cls.png" height = "300px"/>
+        </div>
+      </td>
+    </tr>
+   
  <tr>
       <td>
         <div align="left">
