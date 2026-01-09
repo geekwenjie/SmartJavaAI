@@ -495,7 +495,8 @@ SmartJavaAI是专为JAVA 开发者打造的一个功能丰富、开箱即用的 
 ### 1、环境要求
 
 - Java 版本：**JDK 8或更高版本**
-- 操作系统：不同模型支持的系统不一样，具体请查看[文档](http://doc.smartjavaai.cn)
+- 操作系统：Windows 64 位 / Linux / macOS M1
+- CPU架构：x86_64、ARM64（aarch64）
 
 ### 2、Maven
 
