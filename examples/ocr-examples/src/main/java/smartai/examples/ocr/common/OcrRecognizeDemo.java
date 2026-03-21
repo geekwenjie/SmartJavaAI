@@ -33,7 +33,13 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * OCR 文本识别 示例
@@ -269,6 +275,78 @@ public class OcrRecognizeDemo {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * 多线程文本识别
+     * 注意事项：
+     * 1、模型在外层统一创建，多个线程共享同一个模型实例，避免重复加载模型。
+     * 2、每个线程内部单独创建 Image 对象，避免共享图片对象带来的线程安全问题。
+     */
+    @Test
+    public void multiThreadRecognize() {
+        ExecutorService executorService = null;
+        try {
+            final OcrCommonRecModel recModel = getFastRecModel();
+            final OcrRecOptions options = new OcrRecOptions(false, true);
+            final String imagePath = "src/main/resources/ocr_1.jpg";
+
+            int threadCount = 5;
+            int taskCount = 20;
+            CountDownLatch countDownLatch = new CountDownLatch(taskCount);
+            AtomicInteger successCount = new AtomicInteger(0);
+            AtomicInteger failCount = new AtomicInteger(0);
+            List<String> errorMessages = new ArrayList<>();
+            executorService = Executors.newFixedThreadPool(threadCount);
+
+            long startTime = System.currentTimeMillis();
+            for (int i = 0; i < taskCount; i++) {
+                final int taskIndex = i;
+                executorService.submit(() -> {
+                    try {
+                        Image image = SmartImageFactory.getInstance().fromFile(imagePath);
+                        OcrInfo ocrInfo = recModel.recognize(image, options);
+                        successCount.incrementAndGet();
+                        log.info("线程：{}，任务：{}，识别结果：{}",
+                                Thread.currentThread().getName(),
+                                taskIndex,
+                                JSONObject.toJSONString(ocrInfo));
+                    } catch (Exception e) {
+                        failCount.incrementAndGet();
+                        String errorMsg = "任务" + taskIndex + "识别失败：" + e.getMessage();
+                        synchronized (errorMessages) {
+                            errorMessages.add(errorMsg);
+                        }
+                        log.error(errorMsg, e);
+                    } finally {
+                        countDownLatch.countDown();
+                    }
+                });
+            }
+
+            countDownLatch.await();
+            long costTime = System.currentTimeMillis() - startTime;
+            log.info("多线程识别完成，总任务数：{}，成功：{}，失败：{}，耗时：{} ms",
+                    taskCount, successCount.get(), failCount.get(), costTime);
+
+            if (!errorMessages.isEmpty()) {
+                log.error("失败详情：{}", JsonUtils.toJson(errorMessages));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (executorService != null) {
+                executorService.shutdown();
+                try {
+                    if (!executorService.awaitTermination(10, TimeUnit.SECONDS)) {
+                        executorService.shutdownNow();
+                    }
+                } catch (InterruptedException e) {
+                    executorService.shutdownNow();
+                    Thread.currentThread().interrupt();
+                }
+            }
         }
     }
 
