@@ -319,11 +319,6 @@ SmartJavaAI是专为JAVA 开发者打造的一个功能丰富、开箱即用的 
         <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/ocr/plate_recognized.jpg" width = "500px"/>
         </div>
       </td>
-      <td>
-        <div align="center">
-        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/ocr/plate_recognized2.jpg" width = "500px"/>
-        </div>
-      </td>
     </tr>
   <tr>
       <td>
