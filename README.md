@@ -68,7 +68,7 @@ SmartJavaAI是专为JAVA 开发者打造的一个功能丰富、开箱即用的 
       </td>     
       <td>
         <div align="center">
-        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/face/face4.jpg" width = "500px"/>
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/face/face4.jpg" width = "400px"/>
         </div>
       </td>
     </tr>          
@@ -81,7 +81,7 @@ SmartJavaAI是专为JAVA 开发者打造的一个功能丰富、开箱即用的 
       </td>     
       <td>
         <div align="center">
-        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/face1-1.jpg" width = "500px"/>
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/face1-1.jpg" width = "400px"/>
         </div>
       </td>
     </tr>  
@@ -93,7 +93,7 @@ SmartJavaAI是专为JAVA 开发者打造的一个功能丰富、开箱即用的 
       </td>     
       <td>
         <div align="center">
-        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/idcard.png" width = "500px"/>
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/idcard.png" width = "400px"/>
         </div>
       </td>
     </tr>
@@ -109,7 +109,7 @@ SmartJavaAI是专为JAVA 开发者打造的一个功能丰富、开箱即用的 
       </td>     
       <td>
         <div align="center">
-        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/face1-n.png" width = "500px"/>
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/face1-n.png" width = "400px"/>
         </div>
       </td>
     </tr>  
@@ -126,7 +126,7 @@ SmartJavaAI是专为JAVA 开发者打造的一个功能丰富、开箱即用的 
       </td>     
       <td>
         <div align="center">
-        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/face_attribute.jpg" width = "500px"/>
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/face_attribute.jpg" width = "400px"/>
         </div>
       </td>
     </tr> 
@@ -139,7 +139,7 @@ SmartJavaAI是专为JAVA 开发者打造的一个功能丰富、开箱即用的 
       </td>     
       <td>
         <div align="center">
-        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/liveness2.jpg" width = "500px"/>
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/liveness2.jpg" width = "400px"/>
         </div>
       </td>
     </tr> 
@@ -152,7 +152,7 @@ SmartJavaAI是专为JAVA 开发者打造的一个功能丰富、开箱即用的 
       </td>     
       <td>
         <div align="center">
-        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/emotion.jpg" width = "500px"/>
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/emotion.jpg" width = "400px"/>
         </div>
       </td>
     </tr> 
@@ -177,7 +177,7 @@ SmartJavaAI是专为JAVA 开发者打造的一个功能丰富、开箱即用的 
       </td>
       <td>
         <div align="center">
-        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/objectdect/object_detection_detected.jpg" width = "500px"/>
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/objectdect/object_detection_detected.jpg" width = "400px"/>
         </div>
       </td>
     </tr>
@@ -289,7 +289,7 @@ SmartJavaAI是专为JAVA 开发者打造的一个功能丰富、开箱即用的 
       </td>     
       <td>
         <div align="center">
-        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/ocr/general_ocr_002_recognized.png" width = "500px"/>
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/ocr/general_ocr_002_recognized.png" width = "400px"/>
         </div>
       </td>
     </tr> 
@@ -302,7 +302,7 @@ SmartJavaAI是专为JAVA 开发者打造的一个功能丰富、开箱即用的 
       </td>     
       <td>
         <div align="center">
-        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/ocr/table.jpg" width = "500px"/>
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/ocr/table.jpg" width = "400px"/>
         </div>
       </td>
     </tr>
@@ -316,7 +316,7 @@ SmartJavaAI是专为JAVA 开发者打造的一个功能丰富、开箱即用的 
       </td>     
       <td>
         <div align="center">
-        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/ocr/plate_recognized.jpg" width = "500px"/>
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/ocr/plate_recognized.jpg" width = "400px"/>
         </div>
       </td>
     </tr>
@@ -364,7 +364,7 @@ SmartJavaAI是专为JAVA 开发者打造的一个功能丰富、开箱即用的 
       </td>     
       <td>
         <div align="center">
-        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/translate/translate.png" width = "500px"/>
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/translate/translate.png" width = "400px"/>
         </div>
       </td>
     </tr>
@@ -378,7 +378,7 @@ SmartJavaAI是专为JAVA 开发者打造的一个功能丰富、开箱即用的 
       </td>     
       <td>
         <div align="center">
-        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/speech/asr.png" width = "500px"/>
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/speech/asr.png" width = "400px"/>
         </div>
       </td>
     </tr>
@@ -390,7 +390,7 @@ SmartJavaAI是专为JAVA 开发者打造的一个功能丰富、开箱即用的 
       </td>     
       <td>
         <div align="center">
-        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/speech/tts.jpg" width = "500px"/>
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/speech/tts.jpg" width = "400px"/>
         </div>
       </td>
     </tr>
@@ -405,7 +405,7 @@ SmartJavaAI是专为JAVA 开发者打造的一个功能丰富、开箱即用的 
       </td>     
       <td>
         <div align="center">
-        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/vision/clip.png" width = "500px"/>
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/vision/clip.png" width = "400px"/>
         </div>
       </td>
     </tr>
