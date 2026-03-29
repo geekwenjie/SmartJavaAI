@@ -327,21 +327,19 @@ SmartJavaAI是专为JAVA 开发者打造的一个功能丰富、开箱即用的 
           - 正面识别 <br>
         </div>
       </td>     
-      <td>
-        <div align="center">
-        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/ocr/idcard/idcard_front.png" width = "500px"/>
-        </div>
-      </td>
-      <td>
-        {
+    <td>
+      <div align="center">
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/ocr/idcard/idcard_front.png" width="500px"/>
+        <pre align="left"><code>{
       "name": "小氧",
       "gender": "女",
       "ethnicity": "汉",
       "idNumber": "430602200010108888",
       "birthday": "2000-10-10",
       "address": "湖南省岳阳市岳阳楼区金鄂中路456号"
-  }
-      </td>
+    }</code></pre>
+      </div>
+    </td>
     </tr>
   <tr>
       <td>
@@ -350,14 +348,12 @@ SmartJavaAI是专为JAVA 开发者打造的一个功能丰富、开箱即用的 
           - 反面识别 <br>
         </div>
       </td>     
-      <td>
-        <div align="center">
-        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/ocr/idcard/idcard_back.png" width = "500px"/>
-        </div>
-      </td>
-      <td>
-        {"issuingAuthority":"杭州市公安局江干分局","validFrom":"2015-11-05","validTo":"2025-11-05"}
-      </td>
+     <td>
+      <div align="center">
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/ocr/idcard/idcard_back.png" width="500px"/>
+        <pre align="left"><code> {"issuingAuthority":"杭州市公安局江干分局","validFrom":"2015-11-05","validTo":"2025-11-05"}</code></pre>
+      </div>
+    </td>
     </tr>
     <tr>
       <td>
