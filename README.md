@@ -325,6 +325,45 @@ SmartJavaAI是专为JAVA 开发者打造的一个功能丰富、开箱即用的 
         </div>
       </td>
     </tr>
+  <tr>
+      <td>
+        <div align="left">
+          <p>身份证识别<br>(IDCard Recognition)</p>
+          - 正面识别 <br>
+        </div>
+      </td>     
+      <td>
+        <div align="center">
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/ocr/idcard/idcard_front.png" width = "500px"/>
+        </div>
+      </td>
+      <td>
+        {
+      "name": "小氧",
+      "gender": "女",
+      "ethnicity": "汉",
+      "idNumber": "430602200010108888",
+      "birthday": "2000-10-10",
+      "address": "湖南省岳阳市岳阳楼区金鄂中路456号"
+  }
+      </td>
+    </tr>
+  <tr>
+      <td>
+        <div align="left">
+          <p>身份证识别<br>(IDCard Recognition)</p>
+          - 反面识别 <br>
+        </div>
+      </td>     
+      <td>
+        <div align="center">
+        <img src="https://cdn.jsdelivr.net/gh/geekwenjie/SmartJavaAI-Site/images/ocr/idcard/idcard_back.png" width = "500px"/>
+        </div>
+      </td>
+      <td>
+        {"issuingAuthority":"杭州市公安局江干分局","validFrom":"2015-11-05","validTo":"2025-11-05"}
+      </td>
+    </tr>
     <tr>
       <td>
         <div align="left">
@@ -442,6 +481,7 @@ SmartJavaAI是专为JAVA 开发者打造的一个功能丰富、开箱即用的 
   - 支持通用文字识别，通用手写字识别
   - 支持表格识别
   - 支持中文车牌识别：单层/双层检测，颜色识别，支持12种中文车牌
+  - 支持身份证识别：支持身份证正反面字段提取、方向矫正与结构化解析
 - **机器翻译**
   - 集成NLLB-200模型：支持200+语言互相翻译
 - **语音识别(ASR)**
@@ -870,6 +910,5 @@ SmartJavaAI是专为JAVA 开发者打造的一个功能丰富、开箱即用的 
 5、登录Gitee或Github/Gitcode在你首页可以看到一个 pull request 按钮，点击它，填写一些说明信息，然后提交即可。
 
 6、等待维护者合并
-
 
 
