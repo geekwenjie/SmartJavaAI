@@ -21,6 +21,7 @@ public class OcrRecOptions {
     private boolean enableLineSplit = true;
 
 
+
     public OcrRecOptions(boolean enableDirectionCorrect, boolean enableLineSplit) {
         this.enableDirectionCorrect = enableDirectionCorrect;
         this.enableLineSplit = enableLineSplit;

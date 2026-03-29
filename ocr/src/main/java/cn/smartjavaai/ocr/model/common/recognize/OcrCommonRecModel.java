@@ -61,6 +61,19 @@ public interface OcrCommonRecModel extends AutoCloseable{
         throw new UnsupportedOperationException("默认不支持该功能");
     }
 
+    /**
+     * 基于已有文本检测框执行文本识别。
+     * 适合调用方已经完成文本检测，想避免重复检测的场景。
+     *
+     * @param image 原图
+     * @param boxList 已有文本检测框
+     * @param options 识别选项
+     * @return OCR 结果
+     */
+    default OcrInfo recognize(Image image, List<OcrBox> boxList, OcrRecOptions options) {
+        throw new UnsupportedOperationException("默认不支持该功能");
+    }
+
 
     /**
      * 文本检测
@@ -138,6 +151,18 @@ public interface OcrCommonRecModel extends AutoCloseable{
     }
 
     default List<OcrInfo> batchRecognizeDJLImage(List<Image> imageList, OcrRecOptions options) {
+        throw new UnsupportedOperationException("默认不支持该功能");
+    }
+
+    /**
+     * 基于已有文本检测框执行批量文本识别。
+     *
+     * @param imageList 原图列表
+     * @param boxList 每张图对应的文本检测框列表
+     * @param options 识别选项
+     * @return OCR 结果
+     */
+    default List<OcrInfo> batchRecognizeDJLImage(List<Image> imageList, List<List<OcrBox>> boxList, OcrRecOptions options) {
         throw new UnsupportedOperationException("默认不支持该功能");
     }
 

@@ -8,6 +8,7 @@ import ai.djl.modality.cv.util.NDImageUtils;
 import ai.djl.ndarray.NDArray;
 import ai.djl.ndarray.NDList;
 import ai.djl.ndarray.NDManager;
+import ai.djl.ndarray.types.Shape;
 import ai.djl.opencv.OpenCVImageFactory;
 import cn.smartjavaai.common.cv.SmartImageFactory;
 import cn.smartjavaai.common.entity.*;
@@ -411,5 +412,43 @@ public class OcrUtils {
         graphics.dispose();
     }
 
+
+    public static boolean isSameRow(NDArray box1, NDArray box2) {
+        // 1. 确保 box 是 (4, 2) 的形状
+        NDArray b1 = formatBox(box1);
+        NDArray b2 = formatBox(box2);
+
+        // 2. 获取 Y 坐标列（索引为 1 的列）
+        NDArray y1 = b1.get(":, 1");
+        NDArray y2 = b2.get(":, 1");
+
+        float yMin1 = y1.min().getFloat();
+        float yMax1 = y1.max().getFloat();
+        float yMin2 = y2.min().getFloat();
+        float yMax2 = y2.max().getFloat();
+
+        // 3. 计算重叠高度
+        float overlapHeight = Math.min(yMax1, yMax2) - Math.max(yMin1, yMin2);
+
+        if (overlapHeight <= 0) return false;
+
+        // 4. 计算各自高度
+        float h1 = yMax1 - yMin1;
+        float h2 = yMax2 - yMin2;
+
+        // 5. 判定标准
+        return overlapHeight > (Math.min(h1, h2) * 0.5f);
+    }
+
+    /**
+     * 辅助方法：将 1D 的 8个元素 转换为 2D 的 (4, 2)
+     */
+    private static NDArray formatBox(NDArray box) {
+        if (box.getShape().dimension() == 1) {
+            // 如果是 [x0, y0, x1, y1...] 这种 8 个元素的 1D 阵，转为 (4, 2)
+            return box.reshape(new Shape(4, 2));
+        }
+        return box;
+    }
 
 }

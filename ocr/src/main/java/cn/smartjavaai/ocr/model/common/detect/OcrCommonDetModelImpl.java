@@ -94,8 +94,10 @@ public class OcrCommonDetModelImpl implements OcrCommonDetModel{
 
     @Override
     public List<OcrBox> detect(Image image){
+        long start = System.nanoTime();
         List<Image> imageList = Collections.singletonList(image);
         List<List<OcrBox>> result = batchDetectDJLImage(imageList);
+        log.debug("文本检测模型单图调用耗时={}ms, 检测框数量={}", elapsedMillis(start), result.isEmpty() ? 0 : result.get(0).size());
         return result.get(0);
     }
 
@@ -192,12 +194,19 @@ public class OcrCommonDetModelImpl implements OcrCommonDetModel{
         if(!ImageUtils.isAllImageSizeEqual(imageList)){
             throw new OcrException("图片尺寸不一致");
         }
+        long totalStart = System.nanoTime();
         Predictor<Image, NDList> predictor = null;
         try (NDManager manager = NDManager.newBaseManager()) {
             predictor = detPredictorPool.borrowObject();
             List<NDList> result = predictor.batchPredict(imageList);
             result.forEach(ndList -> ndList.attach(manager));
-            return OcrUtils.convertToOcrBox(result);
+            List<List<OcrBox>> boxes = OcrUtils.convertToOcrBox(result);
+            int totalBoxes = 0;
+            for (List<OcrBox> boxList : boxes) {
+                totalBoxes += boxList == null ? 0 : boxList.size();
+            }
+            log.debug("文本检测总耗时={}ms, batchSize={}, totalBoxes={}", elapsedMillis(totalStart), imageList.size(), totalBoxes);
+            return boxes;
         } catch (Exception e) {
             throw new OcrException("OCR检测错误", e);
         }finally {
@@ -255,6 +264,10 @@ public class OcrCommonDetModelImpl implements OcrCommonDetModel{
     }
     public boolean isFromFactory() {
         return fromFactory;
+    }
+
+    private long elapsedMillis(long startNanos) {
+        return (System.nanoTime() - startNanos) / 1_000_000;
     }
 
 

@@ -47,6 +47,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class OcrCommonRecModelImpl implements OcrCommonRecModel {
 
+    private static final int REC_CHUNK_SIZE = 64;
+
     private GenericObjectPool<Predictor<Image, String>> recPredictorPool;
 
     private OcrRecModelConfig config;
@@ -111,10 +113,27 @@ public class OcrCommonRecModelImpl implements OcrCommonRecModel {
      */
     @Override
     public OcrInfo recognize(Image image, OcrRecOptions options) {
+        long start = System.nanoTime();
         List<OcrInfo> result = batchRecognizeDJLImage(Collections.singletonList(image), options);
         if (CollectionUtils.isEmpty(result)) {
             throw new OcrException("OCR识别结果为空");
         }
+        log.debug("OCR识别单图总耗时={}ms", elapsedMillis(start));
+        return result.get(0);
+    }
+
+    @Override
+    public OcrInfo recognize(Image image, List<OcrBox> boxList, OcrRecOptions options) {
+        long start = System.nanoTime();
+        List<OcrInfo> result = batchRecognizeDJLImage(
+                Collections.singletonList(image),
+                Collections.singletonList(boxList),
+                options
+        );
+        if (CollectionUtils.isEmpty(result)) {
+            throw new OcrException("OCR识别结果为空");
+        }
+        log.debug("OCR识别单图总耗时={}ms", elapsedMillis(start));
         return result.get(0);
     }
 
@@ -212,10 +231,8 @@ public class OcrCommonRecModelImpl implements OcrCommonRecModel {
         //分行判断
         for (int i = 1; i < initList.size(); i++) {
             RotatedBoxCompX tmpBox = new RotatedBoxCompX(initList.get(i).getBox(), initList.get(i).getText());
-            float y1 = firstBox.getBox().toFloatArray()[1];
-            float y2 = tmpBox.getBox().toFloatArray()[1];
-            float dis = Math.abs(y2 - y1);
-            if (dis < 20) { // 认为是同 1 行  - Considered to be in the same line
+            boolean isSameRow = OcrUtils.isSameRow(firstBox.getBox(), tmpBox.getBox());
+            if (isSameRow) {
                 line.add(tmpBox);
             } else { // 换行 - Line break
                 firstBox = tmpBox;
@@ -346,6 +363,11 @@ public class OcrCommonRecModelImpl implements OcrCommonRecModel {
 
     @Override
     public List<OcrInfo> batchRecognizeDJLImage(List<Image> imageList, OcrRecOptions options) {
+        return batchRecognizeDJLImage(imageList, null, options);
+    }
+
+    @Override
+    public List<OcrInfo> batchRecognizeDJLImage(List<Image> imageList, List<List<OcrBox>> boxeList, OcrRecOptions options) {
         if (Objects.isNull(textDetModel)) {
             throw new OcrException("textDetModel is null");
         }
@@ -356,64 +378,82 @@ public class OcrCommonRecModelImpl implements OcrCommonRecModel {
         if (CollectionUtils.isEmpty(imageList)) {
             throw new OcrException("imageList is empty");
         }
-        //检测文本
-        List<List<OcrBox>> boxeList = textDetModel.batchDetectDJLImage(imageList);
-        if (CollectionUtils.isEmpty(boxeList) || boxeList.size() != imageList.size()) {
+        long totalStart = System.nanoTime();
+        List<List<OcrBox>> effectiveBoxList = boxeList;
+        if (CollectionUtils.isEmpty(effectiveBoxList)) {
+            effectiveBoxList = textDetModel.batchDetectDJLImage(imageList);
+        }
+        if (CollectionUtils.isEmpty(effectiveBoxList) || effectiveBoxList.size() != imageList.size()) {
             throw new OcrException("未检测到文本");
         }
         Predictor<Image, String> predictor = null;
         List<OcrInfo> ocrInfoList = new ArrayList<OcrInfo>();
         try (NDManager manager = NDManager.newBaseManager()) {
             predictor = recPredictorPool.borrowObject();
-            List<Image> allImageAlignList = new ArrayList<Image>();
             //检测方向
             if (ocrRecOptions.isEnableDirectionCorrect()) {
                 if (Objects.isNull(directionModel)) {
                     throw new OcrException("请配置方向模型");
                 }
-                List<Mat> matList = imageList.stream()
-                        .map(image -> ImageUtils.toMat(image))
-                        .collect(Collectors.toList());
-                List<List<OcrItem>> ocrItemList = directionModel.batchDetect(boxeList, matList);
-                if (CollectionUtils.isEmpty(ocrItemList) || ocrItemList.size() != imageList.size()) {
-                    throw new OcrException("方向检测失败");
-                }
-                allImageAlignList = new ArrayList<Image>();
-                for (int i = 0; i < ocrItemList.size(); i++) {
-                    Mat srcMat = ImageUtils.toMat(imageList.get(i));
-                    List<Image> imageAlignList = batchAlignWithDirection(ocrItemList.get(i), srcMat, manager);
-//                    for(int j = 0; j < imageAlignList.size(); j++){
-//                        ImageUtils.saveImage(imageAlignList.get(j),"dir-"+i+"-"+j+".png","/Users/xxx/Downloads/testing33");
-//                    }
-                    allImageAlignList.addAll(imageAlignList);
+                long directionStart = System.nanoTime();
+                List<Mat> matList = new ArrayList<>(imageList.size());
+                try {
+                    for (Image image : imageList) {
+                        matList.add(ImageUtils.toMat(image));
+                    }
+                    List<List<OcrItem>> ocrItemList = directionModel.batchDetect(effectiveBoxList, matList);
+                    log.debug("OCR流程-文本方向分类耗时={}ms, batchSize={}", elapsedMillis(directionStart), imageList.size());
+                    if (CollectionUtils.isEmpty(ocrItemList) || ocrItemList.size() != imageList.size()) {
+                        throw new OcrException("方向检测失败");
+                    }
+                    long alignStart = System.nanoTime();
+                    List<String> textList = new ArrayList<>();
+                    List<Image> chunkImages = new ArrayList<>(REC_CHUNK_SIZE);
+                    for (int i = 0; i < ocrItemList.size(); i++) {
+                        Mat srcMat = matList.get(i);
+                        List<Image> imageAlignList = batchAlignWithDirection(ocrItemList.get(i), srcMat, manager);
+                        for (Image alignImage : imageAlignList) {
+                            chunkImages.add(alignImage);
+                            if (chunkImages.size() >= REC_CHUNK_SIZE) {
+                                textList.addAll(batchRecognizeChunk(predictor, chunkImages));
+                            }
+                        }
+                    }
+                    log.debug("OCR流程-方向矫正裁剪耗时={}ms, textBlocks={}", elapsedMillis(alignStart), textList.size() + chunkImages.size());
+                    long recStart = System.nanoTime();
+                    if (!chunkImages.isEmpty()) {
+                        textList.addAll(batchRecognizeChunk(predictor, chunkImages));
+                    }
+                    log.debug("OCR流程-识别模型调用耗时={}ms, textBlocks={}", elapsedMillis(recStart), textList.size());
+                    return buildOcrInfoList(effectiveBoxList, ocrRecOptions, manager, textList, imageList.size(), totalStart);
+                } finally {
+                    releaseTemporaryMats(imageList, matList);
                 }
             } else {
-                for (int i = 0; i < boxeList.size(); i++) {
-                    Mat srcMat = ImageUtils.toMat(imageList.get(i));
-                    List<Image> imageAlignList = batchAlign(boxeList.get(i), srcMat, manager);
-//                    for(int j = 0; j < imageAlignList.size(); j++){
-//                        ImageUtils.saveImage(imageAlignList.get(j),i+"-"+j+".png","/Users/wenjie/Downloads/testing33");
-//                    }
-                    allImageAlignList.addAll(imageAlignList);
-                }
-            }
-            List<String> textList = batchRecognize(allImageAlignList);
-            int textIndex = 0;
-            for (int i = 0; i < boxeList.size(); i++) {
-                List<RotatedBox> rotatedBoxes = new ArrayList<>();
-                for (int j = 0; j < boxeList.get(i).size(); j++) {
-                    if (textIndex >= textList.size()) {
-                        throw new OcrException("识别失败: 第" + i + "张图片, 第" + j + "个文本块，未识别到文本");
+                List<String> textList = new ArrayList<>();
+                List<Image> chunkImages = new ArrayList<>(REC_CHUNK_SIZE);
+                for (int i = 0; i < effectiveBoxList.size(); i++) {
+                    Mat srcMat = null;
+                    try {
+                        srcMat = ImageUtils.toMat(imageList.get(i));
+                        List<Image> imageAlignList = batchAlign(effectiveBoxList.get(i), srcMat, manager);
+                        for (Image alignImage : imageAlignList) {
+                            chunkImages.add(alignImage);
+                            if (chunkImages.size() >= REC_CHUNK_SIZE) {
+                                textList.addAll(batchRecognizeChunk(predictor, chunkImages));
+                            }
+                        }
+                    } finally {
+                        releaseTemporaryMat(imageList.get(i), srcMat);
                     }
-                    OcrBox box = boxeList.get(i).get(j);
-                    NDArray pointsArray = manager.create(box.toFloatArray());
-                    rotatedBoxes.add(new RotatedBox(pointsArray, textList.get(textIndex)));
-                    textIndex++;
                 }
-                OcrInfo ocrInfo = postProcessOcrResult(rotatedBoxes, ocrRecOptions);
-                ocrInfoList.add(ocrInfo);
+                long recStart = System.nanoTime();
+                if (!chunkImages.isEmpty()) {
+                    textList.addAll(batchRecognizeChunk(predictor, chunkImages));
+                }
+                log.debug("OCR流程-识别模型调用耗时={}ms, textBlocks={}", elapsedMillis(recStart), textList.size());
+                return buildOcrInfoList(effectiveBoxList, ocrRecOptions, manager, textList, imageList.size(), totalStart);
             }
-            return ocrInfoList;
         } catch (Exception e) {
             throw new OcrException("OCR检测错误", e);
         } finally {
@@ -432,28 +472,41 @@ public class OcrCommonRecModelImpl implements OcrCommonRecModel {
         }
     }
 
-    private List<String> batchRecognize(List<Image> imageAlignList) {
-        Predictor<Image, String> predictor = null;
+    private List<OcrInfo> buildOcrInfoList(List<List<OcrBox>> effectiveBoxList,
+                                           OcrRecOptions ocrRecOptions,
+                                           NDManager manager,
+                                           List<String> textList,
+                                           int batchSize,
+                                           long totalStart) {
+        int textIndex = 0;
+        List<OcrInfo> ocrInfoList = new ArrayList<>();
+        for (int i = 0; i < effectiveBoxList.size(); i++) {
+            List<RotatedBox> rotatedBoxes = new ArrayList<>();
+            for (int j = 0; j < effectiveBoxList.get(i).size(); j++) {
+                if (textIndex >= textList.size()) {
+                    throw new OcrException("识别失败: 第" + i + "张图片, 第" + j + "个文本块，未识别到文本");
+                }
+                OcrBox box = effectiveBoxList.get(i).get(j);
+                NDArray pointsArray = manager.create(box.toFloatArray());
+                rotatedBoxes.add(new RotatedBox(pointsArray, textList.get(textIndex)));
+                textIndex++;
+            }
+            OcrInfo ocrInfo = postProcessOcrResult(rotatedBoxes, ocrRecOptions);
+            ocrInfoList.add(ocrInfo);
+        }
+        log.debug("OCR流程总耗时={}ms, batchSize={}", elapsedMillis(totalStart), batchSize);
+        return ocrInfoList;
+    }
+
+    private List<String> batchRecognizeChunk(Predictor<Image, String> predictor, List<Image> imageAlignList) {
         try {
-            predictor = recPredictorPool.borrowObject();
             List<String> textList = predictor.batchPredict(imageAlignList);
-            imageAlignList.forEach(subImg -> ImageUtils.releaseOpenCVMat(subImg));
             return textList;
         } catch (Exception e) {
             throw new OcrException("OCR检测错误", e);
         } finally {
-            if (predictor != null) {
-                try {
-                    recPredictorPool.returnObject(predictor); //归还
-                } catch (Exception e) {
-                    log.warn("归还Predictor失败", e);
-                    try {
-                        predictor.close(); // 归还失败才销毁
-                    } catch (Exception ex) {
-                        log.error("关闭Predictor失败", ex);
-                    }
-                }
-            }
+            imageAlignList.forEach(ImageUtils::releaseOpenCVMat);
+            imageAlignList.clear();
         }
     }
 
@@ -524,5 +577,25 @@ public class OcrCommonRecModelImpl implements OcrCommonRecModel {
     }
     public boolean isFromFactory() {
         return fromFactory;
+    }
+
+    private long elapsedMillis(long startNanos) {
+        return (System.nanoTime() - startNanos) / 1_000_000;
+    }
+
+    private void releaseTemporaryMats(List<Image> imageList, List<Mat> matList) {
+        int size = Math.min(imageList.size(), matList.size());
+        for (int i = 0; i < size; i++) {
+            releaseTemporaryMat(imageList.get(i), matList.get(i));
+        }
+    }
+
+    private void releaseTemporaryMat(Image image, Mat mat) {
+        if (mat == null || image == null) {
+            return;
+        }
+        if (!(image.getWrappedImage() instanceof Mat)) {
+            mat.release();
+        }
     }
 }

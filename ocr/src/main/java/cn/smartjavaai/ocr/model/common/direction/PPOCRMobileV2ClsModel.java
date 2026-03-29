@@ -108,13 +108,13 @@ public class PPOCRMobileV2ClsModel implements OcrDirectionModel {
         if(Objects.isNull(textDetModel)){
             throw new OcrException("textDetModel is null");
         }
-        //检测文本
         List<OcrBox> boxeList = textDetModel.detect(image);
         if(Objects.isNull(boxeList) || boxeList.isEmpty()){
             throw new OcrException("未检测到文本");
         }
         Mat srcMat = ImageUtils.toMat(image);
-        return detect(boxeList, srcMat);
+        List<OcrItem> result = detect(boxeList, srcMat);
+        return result;
     }
 
 
@@ -274,7 +274,9 @@ public class PPOCRMobileV2ClsModel implements OcrDirectionModel {
         List<Image> imageList = new ArrayList<Image>();
         List<Boolean> isRotatedList = new ArrayList<Boolean>();
         int index = 0;
+        long totalStart = System.nanoTime();
         try (NDManager manager = model.getNDManager().newSubManager()){
+            long prepareStart = System.nanoTime();
             for(int i = 0; i < srcMatList.size(); i++){
                 for (int j = 0; j < boxList.get(i).size(); j++){
                     //透视变换及裁剪
@@ -292,8 +294,11 @@ public class PPOCRMobileV2ClsModel implements OcrDirectionModel {
                     index++;
                 }
             }
+            log.debug("方向模型裁剪预处理耗时={}ms, batchSize={}, textBlocks={}", elapsedMillis(prepareStart), srcMatList.size(), imageList.size());
             List<List<OcrItem>> result = new ArrayList<>();
+            long predictStart = System.nanoTime();
             List<DirectionInfo> directionInfos = batchDetect(imageList);
+            log.debug("方向分类模型调用耗时={}ms, textBlocks={}", elapsedMillis(predictStart), imageList.size());
             //释放
             imageList.forEach(image -> ImageUtils.releaseOpenCVMat(image));
             if(CollectionUtils.isEmpty(directionInfos)){
@@ -327,6 +332,7 @@ public class PPOCRMobileV2ClsModel implements OcrDirectionModel {
                 }
                 result.add(ocrItemList);
             }
+            log.debug("方向模型总耗时={}ms, batchSize={}, textBlocks={}", elapsedMillis(totalStart), srcMatList.size(), index);
             return result;
         }
     }
@@ -335,7 +341,8 @@ public class PPOCRMobileV2ClsModel implements OcrDirectionModel {
         Predictor<Image, DirectionInfo> predictor = null;
         try {
             predictor = predictorPool.borrowObject();
-            return predictor.batchPredict(imageList);
+            List<DirectionInfo> result = predictor.batchPredict(imageList);
+            return result;
         } catch (Exception e) {
             throw new OcrException("OCR检测错误", e);
         }finally {
@@ -398,5 +405,9 @@ public class PPOCRMobileV2ClsModel implements OcrDirectionModel {
     }
     public boolean isFromFactory() {
         return fromFactory;
+    }
+
+    private long elapsedMillis(long startNanos) {
+        return (System.nanoTime() - startNanos) / 1_000_000;
     }
 }
