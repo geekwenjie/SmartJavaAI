@@ -12,9 +12,9 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <smartjavaai.version>1.1.1</smartjavaai.version>
+        <smartjavaai.version>1.1.2</smartjavaai.version>
         <!--如果打包运行，需要替换成你的main-->
-        <exec.mainClass>smartai.examples.ocr.common.OcrRecognizeDemo</exec.mainClass>
+        <exec.mainClass>smartai.examples.ocr.common.OcrDetectionDemo</exec.mainClass>
 
         <javacv.version>1.5.10</javacv.version>
 
@@ -90,19 +90,33 @@
             <groupId>cn.smartjavaai</groupId>
             <artifactId>ocr</artifactId>
             <exclusions>
-                <exclusion>
-                    <groupId>com.microsoft.onnxruntime</groupId>
-                    <artifactId>onnxruntime</artifactId>
-                </exclusion>
+<!--                <exclusion>-->
+<!--                    <groupId>org.openpnp</groupId>-->
+<!--                    <artifactId>opencv</artifactId>-->
+<!--                </exclusion>-->
+<!--                <exclusion>-->
+<!--                    <groupId>com.microsoft.onnxruntime</groupId>-->
+<!--                    <artifactId>onnxruntime</artifactId>-->
+<!--                </exclusion>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.bytedeco</groupId>-->
+<!--                    <artifactId>javacv</artifactId>-->
+<!--                </exclusion>-->
             </exclusions>
         </dependency>
 
-        <dependency>
-            <groupId>com.microsoft.onnxruntime</groupId>
-            <artifactId>onnxruntime</artifactId>
-            <version>1.20.0</version>
-            <scope>runtime</scope>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.microsoft.onnxruntime</groupId>-->
+<!--            <artifactId>onnxruntime</artifactId>-->
+<!--            <version>1.16.3</version>-->
+<!--            <scope>compile</scope>-->
+<!--        </dependency>-->
+
+<!--        <dependency>-->
+<!--            <groupId>org.openpnp</groupId>-->
+<!--            <artifactId>opencv</artifactId>-->
+<!--            <version>3.4.2-2</version>-->
+<!--        </dependency>-->
 
 
         <dependency>
@@ -113,79 +127,10 @@
         </dependency>
 
 
-        <!-- windows平台 (保留对应平台的配置，可以减小包大小)-->
-        <dependency>
-            <groupId>org.bytedeco</groupId>
-            <artifactId>javacpp</artifactId>
-            <version>${javacv.version}</version>
-            <classifier>${javacv.platform.windows-x86_64}</classifier>
-        </dependency>
-        <dependency>
-            <groupId>org.bytedeco</groupId>
-            <artifactId>ffmpeg</artifactId>
-            <version>6.1.1-1.5.10</version>
-            <classifier>${javacv.platform.windows-x86_64}</classifier>
-        </dependency>
-
-        <dependency>
-            <groupId>org.bytedeco</groupId>
-            <artifactId>openblas</artifactId>
-            <version>0.3.26-1.5.10</version>
-            <classifier>${javacv.platform.windows-x86_64}</classifier>
-        </dependency>
-
-        <dependency>
-            <groupId>org.bytedeco</groupId>
-            <artifactId>opencv</artifactId>
-            <version>4.9.0-1.5.10</version>
-            <classifier>${javacv.platform.windows-x86_64}</classifier>
-        </dependency>
-
-        <dependency>
-            <groupId>ai.djl.pytorch</groupId>
-            <artifactId>pytorch-native-cpu</artifactId>
-            <classifier>${djl.platform.windows-x86_64}</classifier>
-            <version>2.7.1</version>
-            <scope>runtime</scope>
-        </dependency>
 
 
 
-        <!-- linux x86 平台 (保留对应平台的配置，可以减小包大小)-->
-        <dependency>
-            <groupId>org.bytedeco</groupId>
-            <artifactId>javacpp</artifactId>
-            <version>${javacv.version}</version>
-            <classifier>${javacv.platform.linux-x86_64}</classifier>
-        </dependency>
-        <dependency>
-            <groupId>org.bytedeco</groupId>
-            <artifactId>ffmpeg</artifactId>
-            <version>6.1.1-1.5.10</version>
-            <classifier>${javacv.platform.linux-x86_64}</classifier>
-        </dependency>
 
-        <dependency>
-            <groupId>org.bytedeco</groupId>
-            <artifactId>openblas</artifactId>
-            <version>0.3.26-1.5.10</version>
-            <classifier>${javacv.platform.linux-x86_64}</classifier>
-        </dependency>
-
-        <dependency>
-            <groupId>org.bytedeco</groupId>
-            <artifactId>opencv</artifactId>
-            <version>4.9.0-1.5.10</version>
-            <classifier>${javacv.platform.linux-x86_64}</classifier>
-        </dependency>
-
-        <dependency>
-            <groupId>ai.djl.pytorch</groupId>
-            <artifactId>pytorch-native-cpu</artifactId>
-            <classifier>${djl.platform.linux-x86_64}</classifier>
-            <version>2.7.1</version>
-            <scope>runtime</scope>
-        </dependency>
 
         <!-- linux aarch64 平台 (保留对应平台的配置，可以减小包大小)-->
         <dependency>
@@ -223,42 +168,16 @@
             <scope>runtime</scope>
         </dependency>
 
+<!--        <dependency>-->
+<!--            <groupId>ai.djl.pytorch</groupId>-->
+<!--            <artifactId>pytorch-native-cpu-precxx11</artifactId>-->
+<!--            <classifier>linux-aarch64</classifier>-->
+<!--            <version>2.5.1</version>-->
+<!--            <scope>runtime</scope>-->
+<!--        </dependency>-->
 
-        <!-- macOS M系列 平台  (保留对应平台的配置，可以减小包大小)-->
-        <dependency>
-            <groupId>org.bytedeco</groupId>
-            <artifactId>javacpp</artifactId>
-            <version>${javacv.version}</version>
-            <classifier>${javacv.platform.macosx-arm64}</classifier>
-        </dependency>
-        <dependency>
-            <groupId>org.bytedeco</groupId>
-            <artifactId>ffmpeg</artifactId>
-            <version>6.1.1-1.5.10</version>
-            <classifier>${javacv.platform.macosx-arm64}</classifier>
-        </dependency>
 
-        <dependency>
-            <groupId>org.bytedeco</groupId>
-            <artifactId>openblas</artifactId>
-            <version>0.3.26-1.5.10</version>
-            <classifier>${javacv.platform.macosx-arm64}</classifier>
-        </dependency>
 
-        <dependency>
-            <groupId>org.bytedeco</groupId>
-            <artifactId>opencv</artifactId>
-            <version>4.9.0-1.5.10</version>
-            <classifier>${javacv.platform.macosx-arm64}</classifier>
-        </dependency>
-
-        <dependency>
-            <groupId>ai.djl.pytorch</groupId>
-            <artifactId>pytorch-native-cpu</artifactId>
-            <classifier>${djl.platform.osx-aarch64}</classifier>
-            <version>2.7.1</version>
-            <scope>runtime</scope>
-        </dependency>
 
 
     </dependencies>
