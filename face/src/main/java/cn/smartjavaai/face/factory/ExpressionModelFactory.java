@@ -6,8 +6,6 @@ import cn.smartjavaai.face.enums.ExpressionModelEnum;
 import cn.smartjavaai.face.exception.FaceException;
 import cn.smartjavaai.face.model.expression.CommonEmotionModel;
 import cn.smartjavaai.face.model.expression.ExpressionModel;
-import cn.smartjavaai.face.model.liveness.MiniVisionLivenessModel;
-import cn.smartjavaai.face.model.liveness.Seetaface6LivenessModel;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
@@ -97,7 +95,7 @@ public class ExpressionModelFactory {
 
     // 初始化默认算法
     static {
-        registerModel(ExpressionModelEnum.DensNet121, CommonEmotionModel.class);
+        registerModel(ExpressionModelEnum.DenseNet121, CommonEmotionModel.class);
         registerModel(ExpressionModelEnum.FrEmotion, CommonEmotionModel.class);
         log.debug("缓存目录：{}", Config.getCachePath());
     }
