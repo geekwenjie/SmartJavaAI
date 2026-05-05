@@ -1,14 +1,9 @@
 package cn.smartjavaai.face.config;
 
 import cn.smartjavaai.common.config.ModelConfig;
-import cn.smartjavaai.common.enums.DeviceEnum;
 import cn.smartjavaai.face.enums.ExpressionModelEnum;
 import cn.smartjavaai.face.model.facedect.FaceDetModel;
-import cn.smartjavaai.face.model.facerec.FaceRecModel;
 import lombok.Data;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author dwj
@@ -20,7 +15,7 @@ public class FaceExpressionConfig extends ModelConfig {
     /**
      * 模型枚举
      */
-    private ExpressionModelEnum modelEnum = ExpressionModelEnum.DensNet121;
+    private ExpressionModelEnum modelEnum = ExpressionModelEnum.DenseNet121;
 
     /**
      * 模型路径
