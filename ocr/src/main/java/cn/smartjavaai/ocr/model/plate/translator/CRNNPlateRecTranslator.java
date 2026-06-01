@@ -31,7 +31,8 @@ public class CRNNPlateRecTranslator implements Translator<Image, PlateResult> {
         // Resize to (168, 48)
         NDArray array = input.toNDArray(manager, Image.Flag.COLOR);
         array = NDImageUtils.resize(array, 168, 48);
-
+        // RGB → BGR，与 cv2 对齐
+        array = array.flip(2);
         // Normalize
         array = array.toType(DataType.FLOAT32, false)
                 .div(255f)
