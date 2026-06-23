@@ -6,7 +6,7 @@ package cn.smartjavaai.face.enums;
  */
 public enum ExpressionModelEnum {
 
-    DensNet121("DensNet121"),
+    DenseNet121("DenseNet121"),
 
     FrEmotion("FrEmotion");
 

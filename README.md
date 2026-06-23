@@ -628,10 +628,10 @@ SmartJavaAI是专为JAVA 开发者打造的一个功能丰富、开箱即用的 
 支持功能：
 - 支持识别7种表情：neutral（中性）、happy（高兴）、sad（悲伤）、surprise（惊讶）、fear（恐惧）、disgust（厌恶）、anger（愤怒）
 
-| 模型名称     | 引擎      | 模型简介                     | 模型开源网站                                                               |
-|---------|-----------|--------------------------|----------------------------------------------------------------------|
-| DensNet121 | PyTorch| FaceLib的densnet121表情识别模型 | [Github](https://github.com/sajjjadayobi/FaceLib/) |
-| FrEmotion| OnnxRuntime    | FaceRecognition-LivenessDetection-Javascript      | [Github](https://github.com/Faceplugin-ltd/FaceRecognition-LivenessDetection-Javascript)                 |
+| 模型名称        | 引擎      | 模型简介                                         | 模型开源网站                                                               |
+|-------------|-----------|----------------------------------------------|----------------------------------------------------------------------|
+| DenseNet121 | PyTorch| FaceLib的densenet121表情识别模型                    | [Github](https://github.com/sajjjadayobi/FaceLib/) |
+| FrEmotion   | OnnxRuntime    | FaceRecognition-LivenessDetection-Javascript | [Github](https://github.com/Faceplugin-ltd/FaceRecognition-LivenessDetection-Javascript)                 |
 
 
 **人脸属性识别模型(GenderDetection、AgeDetection、EyeClosenessDetection、FacePoseEstimation)**
